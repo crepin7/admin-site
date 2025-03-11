@@ -6,6 +6,8 @@ import React, { useState } from "react";
 function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
   const [formData, setFormData] = useState({
     name: initialData.name || "",
+    capacity: initialData.capacity || "",
+    description: initialData.description || "",
     buildingId: initialData.buildingId || "",
   });
 
@@ -21,9 +23,9 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md">
-        <h2 className="text-xl font-bold text-indigo-700 mb-4">
+    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <h2 className="text-xl font-bold text-indigo-500 mb-4">
           {initialData.id ? "Modifier la salle" : "Ajouter une salle"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -36,6 +38,27 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
               onChange={handleChange}
               className="w-full p-2 border rounded"
               required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Capacité</label>
+            <input
+              type="number"
+              name="capacity"
+              value={formData.capacity}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+              rows="3"
             />
           </div>
           <div>

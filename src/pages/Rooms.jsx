@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import RoomList from "../components/RoomList";
 import RoomForm from "../components/RoomForm";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaUserCircle } from "react-icons/fa";
 
 /**
- * Page pour gérer les salles avec thème indigo.
+ * Page pour gérer les salles avec thème indigo-500 et icône utilisateur.
  */
 function Rooms() {
   const [rooms, setRooms] = useState([
-    { id: 1, name: "Salle 101", buildingId: 1 },
-    { id: 2, name: "Salle 102", buildingId: 1 },
+    { id: 1, name: "Salle 101", capacity: 50, description: "Salle de cours", buildingId: 1 },
+    { id: 2, name: "Salle 102", capacity: 30, description: "Salle de TD", buildingId: 1 },
   ]);
   const buildings = [
     { id: 1, name: "Bâtiment A" },
     { id: 2, name: "Bâtiment B" },
-  ]; // À synchroniser avec Buildings
+  ];
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingRoom, setEditingRoom] = useState(null);
@@ -42,8 +42,11 @@ function Rooms() {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-indigo-700 mb-6">Gestion des Salles</h1>
+    <div className="relative">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-indigo-500">Gestion des Salles</h1>
+        <FaUserCircle className="text-indigo-500 text-3xl" title="Administrateur" />
+      </div>
       <div className="flex justify-between items-center mb-6">
         <input
           type="text"

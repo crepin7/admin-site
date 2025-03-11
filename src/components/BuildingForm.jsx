@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 /**
- * Formulaire pour ajouter ou modifier un bâtiment.
- * Utilisé dans un modal personnalisé.
+ * Formulaire pour ajouter ou modifier un bâtiment dans un modal.
+ * Taille limitée avec défilement interne.
  */
 function BuildingForm({ onSubmit, initialData = {}, onClose }) {
   const [formData, setFormData] = useState({
@@ -13,17 +13,25 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
     imageUrl: initialData.imageUrl || "",
     rooms: initialData.rooms || [],
   });
-  const [roomInput, setRoomInput] = useState("");
+  const [roomInput, setRoomInput] = useState({ name: "", capacity: "", description: "" });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleRoomChange = (e) => {
+    const { name, value } = e.target;
+    setRoomInput((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleAddRoom = () => {
-    if (roomInput.trim()) {
-      setFormData((prev) => ({ ...prev, rooms: [...prev.rooms, roomInput.trim()] }));
-      setRoomInput("");
+    if (roomInput.name.trim()) {
+      setFormData((prev) => ({
+        ...prev,
+        rooms: [...prev.rooms, { ...roomInput }],
+      }));
+      setRoomInput({ name: "", capacity: "", description: "" });
     }
   };
 
@@ -41,9 +49,9 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md">
-        <h2 className="text-xl font-bold text-indigo-700 mb-4">
+    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <h2 className="text-xl font-bold text-indigo-500 mb-4">
           {initialData.id ? "Modifier le bâtiment" : "Ajouter un bâtiment"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -104,26 +112,43 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Salles</label>
-            <div className="flex space-x-2">
+            <div className="space-y-2">
               <input
                 type="text"
-                value={roomInput}
-                onChange={(e) => setRoomInput(e.target.value)}
+                name="name"
+                value={roomInput.name}
+                onChange={handleRoomChange}
                 className="w-full p-2 border rounded"
                 placeholder="Nom de la salle"
+              />
+              <input
+                type="number"
+                name="capacity"
+                value={roomInput.capacity}
+                onChange={handleRoomChange}
+                className="w-full p-2 border rounded"
+                placeholder="Capacité"
+              />
+              <textarea
+                name="description"
+                value={roomInput.description}
+                onChange={handleRoomChange}
+                className="w-full p-2 border rounded"
+                placeholder="Description"
+                rows="2"
               />
               <button
                 type="button"
                 onClick={handleAddRoom}
-                className="bg-indigo-500 text-white p-2 rounded hover:bg-indigo-600"
+                className="bg-indigo-500 text-white p-2 rounded hover:bg-indigo-600 w-full"
               >
-                +
+                Ajouter la salle
               </button>
             </div>
-            <ul className="mt-2 space-y-1">
+            <ul className="mt-2 space-y-2 max-h-40 overflow-y-auto">
               {formData.rooms.map((room, index) => (
-                <li key={index} className="flex justify-between items-center text-sm">
-                  {room}
+                <li key={index} className="flex justify-between items-center text-sm bg-gray-100 p-2 rounded">
+                  <span>{room.name} (Capacité: {room.capacity})</span>
                   <button
                     type="button"
                     onClick={() => handleRemoveRoom(index)}
