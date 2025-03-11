@@ -1,22 +1,19 @@
 import React, { useState } from "react";
 
-/**
- * Formulaire pour ajouter ou modifier un bâtiment avec importation d'image.
- */
 function BuildingForm({ onSubmit, initialData = {}, onClose }) {
   const [formData, setFormData] = useState({
     name: initialData.name || "",
     description: initialData.description || "",
     latitude: initialData.latitude || "",
     longitude: initialData.longitude || "",
-    image: initialData.image || "", // URL ou base64
+    image: initialData.image || "",
     rooms: initialData.rooms || [],
   });
   const [roomInput, setRoomInput] = useState({
     name: "",
     capacity: "",
     description: "",
-    image: "", // URL ou base64
+    image: "",
   });
 
   const handleChange = (e) => {
@@ -52,10 +49,10 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
   };
 
   const handleAddRoom = () => {
-    if (roomInput.name.trim()) {
+    if (roomInput.name.trim() && roomInput.capacity) {
       setFormData((prev) => ({
         ...prev,
-        rooms: [...prev.rooms, { id: Date.now(), ...roomInput }],
+        rooms: [...prev.rooms, { ...roomInput, id: Date.now() }],
       }));
       setRoomInput({ name: "", capacity: "", description: "", image: "" });
     }
@@ -161,6 +158,7 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
                 onChange={handleRoomChange}
                 className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="Nom de la salle"
+                
               />
               <input
                 type="number"
@@ -169,6 +167,7 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
                 onChange={handleRoomChange}
                 className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="Capacité"
+                
               />
               <textarea
                 name="description"

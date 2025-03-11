@@ -12,8 +12,8 @@ export function CampusProvider({ children }) {
       longitude: 1.2133,
       image: "https://via.placeholder.com/300x150",
       rooms: [
-        { id: 1, name: "Salle 101", capacity: 50, description: "Salle de cours", image: "" },
-        { id: 2, name: "Salle 102", capacity: 30, description: "Salle de TD", image: "" },
+        { id: 1, name: "Salle 101", capacity: 50, description: "Salle de cours", image: "", buildingId: 1 },
+        { id: 2, name: "Salle 102", capacity: 30, description: "Salle de TD", image: "", buildingId: 1 },
       ],
     },
     {
@@ -24,7 +24,7 @@ export function CampusProvider({ children }) {
       longitude: 1.2140,
       image: "https://via.placeholder.com/300x150",
       rooms: [
-        { id: 3, name: "Salle 201", capacity: 40, description: "Salle polyvalente", image: "" },
+        { id: 3, name: "Salle 201", capacity: 40, description: "Salle polyvalente", image: "", buildingId: 2 },
       ],
     },
   ]);
@@ -46,14 +46,13 @@ export function CampusProvider({ children }) {
   };
 
   const addRoom = (newRoom) => {
+    const roomWithId = { ...newRoom, id: Date.now() };
     setBuildings((prev) =>
       prev.map((b) =>
-        b.id === newRoom.buildingId
-          ? { ...b, rooms: [...b.rooms, { id: Date.now(), ...newRoom }] }
-          : b
+        b.id === newRoom.buildingId ? { ...b, rooms: [...b.rooms, roomWithId] } : b
       )
     );
-    setRooms((prev) => [...prev, { id: Date.now(), ...newRoom }]);
+    setRooms((prev) => [...prev, roomWithId]);
   };
 
   const updateRoom = (updatedRoom) => {

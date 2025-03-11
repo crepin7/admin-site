@@ -1,9 +1,6 @@
 import React from "react";
 import { FaEdit, FaTrash, FaExclamationTriangle } from "react-icons/fa";
 
-/**
- * Composant pour lister les salles avec image et description.
- */
 function RoomList({ rooms, buildings, onEdit, onDelete }) {
   return (
     <div className="mt-6">

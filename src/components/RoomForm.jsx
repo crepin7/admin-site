@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 
-/**
- * Formulaire pour ajouter ou modifier une salle avec importation d'image.
- */
 function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
   const [formData, setFormData] = useState({
     name: initialData.name || "",
     capacity: initialData.capacity || "",
     description: initialData.description || "",
-    image: initialData.image || "", // URL ou base64
+    image: initialData.image || "",
     buildingId: initialData.buildingId || "",
   });
 
