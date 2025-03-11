@@ -1,0 +1,48 @@
+import React from "react";
+import { FaExclamationTriangle } from "react-icons/fa";
+
+/**
+ * Modal pour afficher les détails d’un bâtiment.
+ */
+function BuildingDetailsModal({ building, onClose }) {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-lg">
+        <h2 className="text-xl font-bold text-indigo-500 mb-4">{building.name}</h2>
+        <img
+          src={building.imageUrl || "https://via.placeholder.com/300x150"}
+          alt={building.name}
+          className="w-full h-40 object-cover rounded mb-4"
+        />
+        <div className="space-y-2">
+          <p><strong>Description:</strong> {building.description || "Aucune description"}</p>
+          <p><strong>Latitude:</strong> {building.latitude}</p>
+          <p><strong>Longitude:</strong> {building.longitude}</p>
+          <p><strong>Salles:</strong></p>
+          {building.rooms.length === 0 ? (
+            <div className="flex items-center text-gray-500">
+              <FaExclamationTriangle className="mr-2" />
+              Aucune salle
+            </div>
+          ) : (
+            <ul className="list-disc pl-5 space-y-2">
+              {building.rooms.map((room) => (
+                <li key={room.id} className="text-sm">
+                  {room.name} (Capacité: {room.capacity}) - {room.description}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <button
+          onClick={onClose}
+          className="mt-4 bg-indigo-500 text-white p-2 rounded hover:bg-indigo-600 w-full"
+        >
+          Fermer
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default BuildingDetailsModal;

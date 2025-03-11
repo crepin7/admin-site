@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 
 /**
- * Formulaire pour ajouter ou modifier une salle dans un modal.
+ * Formulaire pour ajouter ou modifier une salle.
  */
 function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
   const [formData, setFormData] = useState({
     name: initialData.name || "",
     capacity: initialData.capacity || "",
     description: initialData.description || "",
+    imageUrl: initialData.imageUrl || "",
     buildingId: initialData.buildingId || "",
   });
 
@@ -24,7 +25,7 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="bg-white p-6 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto shadow-lg">
         <h2 className="text-xl font-bold text-indigo-500 mb-4">
           {initialData.id ? "Modifier la salle" : "Ajouter une salle"}
         </h2>
@@ -36,7 +37,7 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
           </div>
@@ -47,7 +48,7 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
               name="capacity"
               value={formData.capacity}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
           </div>
@@ -57,8 +58,18 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               rows="3"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">URL de l'image</label>
+            <input
+              type="url"
+              name="imageUrl"
+              value={formData.imageUrl}
+              onChange={handleChange}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
@@ -67,7 +78,7 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
               name="buildingId"
               value={formData.buildingId}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             >
               <option value="">Sélectionner un bâtiment</option>

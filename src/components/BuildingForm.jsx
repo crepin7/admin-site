@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 
 /**
- * Formulaire pour ajouter ou modifier un bâtiment dans un modal.
- * Taille limitée avec défilement interne.
+ * Formulaire pour ajouter ou modifier un bâtiment.
  */
 function BuildingForm({ onSubmit, initialData = {}, onClose }) {
   const [formData, setFormData] = useState({
@@ -13,7 +12,12 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
     imageUrl: initialData.imageUrl || "",
     rooms: initialData.rooms || [],
   });
-  const [roomInput, setRoomInput] = useState({ name: "", capacity: "", description: "" });
+  const [roomInput, setRoomInput] = useState({
+    name: "",
+    capacity: "",
+    description: "",
+    imageUrl: "",
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,16 +33,16 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
     if (roomInput.name.trim()) {
       setFormData((prev) => ({
         ...prev,
-        rooms: [...prev.rooms, { ...roomInput }],
+        rooms: [...prev.rooms, { id: Date.now(), ...roomInput }],
       }));
-      setRoomInput({ name: "", capacity: "", description: "" });
+      setRoomInput({ name: "", capacity: "", description: "", imageUrl: "" });
     }
   };
 
-  const handleRemoveRoom = (index) => {
+  const handleRemoveRoom = (id) => {
     setFormData((prev) => ({
       ...prev,
-      rooms: prev.rooms.filter((_, i) => i !== index),
+      rooms: prev.rooms.filter((r) => r.id !== id),
     }));
   };
 
@@ -50,7 +54,7 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-lg">
         <h2 className="text-xl font-bold text-indigo-500 mb-4">
           {initialData.id ? "Modifier le bâtiment" : "Ajouter un bâtiment"}
         </h2>
@@ -62,7 +66,7 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
           </div>
@@ -72,7 +76,7 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               rows="3"
             />
           </div>
@@ -83,7 +87,7 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
               name="latitude"
               value={formData.latitude}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               step="any"
               required
             />
@@ -95,7 +99,7 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
               name="longitude"
               value={formData.longitude}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               step="any"
               required
             />
@@ -107,7 +111,7 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
               name="imageUrl"
               value={formData.imageUrl}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
@@ -118,7 +122,7 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
                 name="name"
                 value={roomInput.name}
                 onChange={handleRoomChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="Nom de la salle"
               />
               <input
@@ -126,16 +130,24 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
                 name="capacity"
                 value={roomInput.capacity}
                 onChange={handleRoomChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="Capacité"
               />
               <textarea
                 name="description"
                 value={roomInput.description}
                 onChange={handleRoomChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="Description"
                 rows="2"
+              />
+              <input
+                type="url"
+                name="imageUrl"
+                value={roomInput.imageUrl}
+                onChange={handleRoomChange}
+                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="URL de l'image"
               />
               <button
                 type="button"
@@ -146,12 +158,12 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
               </button>
             </div>
             <ul className="mt-2 space-y-2 max-h-40 overflow-y-auto">
-              {formData.rooms.map((room, index) => (
-                <li key={index} className="flex justify-between items-center text-sm bg-gray-100 p-2 rounded">
+              {formData.rooms.map((room) => (
+                <li key={room.id} className="flex justify-between items-center text-sm bg-gray-100 p-2 rounded">
                   <span>{room.name} (Capacité: {room.capacity})</span>
                   <button
                     type="button"
-                    onClick={() => handleRemoveRoom(index)}
+                    onClick={() => handleRemoveRoom(room.id)}
                     className="text-red-500 hover:text-red-700"
                   >
                     Supprimer
