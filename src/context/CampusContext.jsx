@@ -1,9 +1,5 @@
 import React, { createContext, useState, useContext } from "react";
 
-/**
- * Contexte pour partager les bâtiments et salles entre composants.
- * Compatible avec une future intégration Firebase.
- */
 const CampusContext = createContext();
 
 export function CampusProvider({ children }) {
@@ -14,10 +10,10 @@ export function CampusProvider({ children }) {
       description: "Bâtiment principal de sciences",
       latitude: 6.1725,
       longitude: 1.2133,
-      imageUrl: "https://via.placeholder.com/300x150",
+      image: "https://via.placeholder.com/300x150",
       rooms: [
-        { id: 1, name: "Salle 101", capacity: 50, description: "Salle de cours", imageUrl: "" },
-        { id: 2, name: "Salle 102", capacity: 30, description: "Salle de TD", imageUrl: "" },
+        { id: 1, name: "Salle 101", capacity: 50, description: "Salle de cours", image: "" },
+        { id: 2, name: "Salle 102", capacity: 30, description: "Salle de TD", image: "" },
       ],
     },
     {
@@ -26,8 +22,10 @@ export function CampusProvider({ children }) {
       description: "Bâtiment des arts",
       latitude: 6.1730,
       longitude: 1.2140,
-      imageUrl: "https://via.placeholder.com/300x150",
-      rooms: [{ id: 3, name: "Salle 201", capacity: 40, description: "Salle polyvalente", imageUrl: "" }],
+      image: "https://via.placeholder.com/300x150",
+      rooms: [
+        { id: 3, name: "Salle 201", capacity: 40, description: "Salle polyvalente", image: "" },
+      ],
     },
   ]);
 

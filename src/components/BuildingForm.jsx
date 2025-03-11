@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 /**
- * Formulaire pour ajouter ou modifier un bâtiment.
+ * Formulaire pour ajouter ou modifier un bâtiment avec importation d'image.
  */
 function BuildingForm({ onSubmit, initialData = {}, onClose }) {
   const [formData, setFormData] = useState({
@@ -9,14 +9,14 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
     description: initialData.description || "",
     latitude: initialData.latitude || "",
     longitude: initialData.longitude || "",
-    imageUrl: initialData.imageUrl || "",
+    image: initialData.image || "", // URL ou base64
     rooms: initialData.rooms || [],
   });
   const [roomInput, setRoomInput] = useState({
     name: "",
     capacity: "",
     description: "",
-    imageUrl: "",
+    image: "", // URL ou base64
   });
 
   const handleChange = (e) => {
@@ -24,9 +24,31 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({ ...prev, image: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleRoomChange = (e) => {
     const { name, value } = e.target;
     setRoomInput((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleRoomImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setRoomInput((prev) => ({ ...prev, image: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleAddRoom = () => {
@@ -35,7 +57,7 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
         ...prev,
         rooms: [...prev.rooms, { id: Date.now(), ...roomInput }],
       }));
-      setRoomInput({ name: "", capacity: "", description: "", imageUrl: "" });
+      setRoomInput({ name: "", capacity: "", description: "", image: "" });
     }
   };
 
@@ -105,14 +127,29 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">URL de l'image</label>
+            <label className="block text-sm font-medium text-gray-700">Image</label>
             <input
               type="url"
-              name="imageUrl"
-              value={formData.imageUrl}
+              name="image"
+              value={formData.image.startsWith("data:") ? "" : formData.image}
               onChange={handleChange}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="URL de l'image"
             />
+            <p className="text-sm text-gray-500 mt-1">Ou importer une image :</p>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="w-full p-2"
+            />
+            {formData.image && (
+              <img
+                src={formData.image}
+                alt="Prévisualisation"
+                className="mt-2 w-32 h-32 object-cover rounded"
+              />
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Salles</label>
@@ -143,12 +180,25 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
               />
               <input
                 type="url"
-                name="imageUrl"
-                value={roomInput.imageUrl}
+                name="image"
+                value={roomInput.image.startsWith("data:") ? "" : roomInput.image}
                 onChange={handleRoomChange}
                 className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="URL de l'image"
               />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleRoomImageUpload}
+                className="w-full p-2"
+              />
+              {roomInput.image && (
+                <img
+                  src={roomInput.image}
+                  alt="Prévisualisation salle"
+                  className="mt-2 w-24 h-24 object-cover rounded"
+                />
+              )}
               <button
                 type="button"
                 onClick={handleAddRoom}
