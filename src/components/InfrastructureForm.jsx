@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function BuildingForm({ onSubmit, initialData = {}, onClose }) {
+function InfrastructureForm({ onSubmit, initialData = {}, onClose }) {
   const [formData, setFormData] = useState({
     name: initialData.name || "",
     description: initialData.description || "",
@@ -35,7 +35,7 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
     <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-lg">
         <h2 className="text-xl font-bold text-indigo-500 mb-4">
-          {initialData.id ? "Modifier le bâtiment" : "Ajouter un bâtiment"}
+          {initialData.id ? "Modifier l'infrastructure" : "Ajouter une infrastructure"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -129,4 +129,4 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
   );
 }
 
-export default BuildingForm;
+export default InfrastructureForm;

@@ -6,12 +6,17 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
     capacity: initialData.capacity || "",
     description: initialData.description || "",
     image: initialData.image || "",
-    buildingId: initialData.buildingId || "",
+    buildingId: initialData.buildingId || "", // Peut être un int ou une string au départ
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Convertir buildingId en entier dès le changement
+    if (name === "buildingId") {
+      setFormData((prev) => ({ ...prev, [name]: value ? parseInt(value, 10) : "" }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleImageUpload = (e) => {
@@ -27,7 +32,12 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    // S'assurer que buildingId est un entier avant soumission
+    const submittedData = {
+      ...formData,
+      buildingId: parseInt(formData.buildingId, 10), // Conversion finale
+    };
+    onSubmit(submittedData);
     onClose();
   };
 

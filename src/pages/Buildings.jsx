@@ -3,17 +3,17 @@ import { FaPlus, FaUserCircle, FaSearch } from "react-icons/fa";
 import BuildingList from "../components/BuildingList";
 import BuildingForm from "../components/BuildingForm";
 import BuildingDetailsModal from "../components/BuildingDetailsModal";
+import ConfirmationModal from "../components/ConfirmationModal";
 import { useCampus } from "../context/CampusContext";
 
-/**
- * Page pour gérer les bâtiments avec recherche améliorée.
- */
 function Buildings() {
-  const { buildings, addBuilding, updateBuilding, deleteBuilding } = useCampus();
+  const { buildings, rooms, addBuilding, updateBuilding, deleteBuilding } = useCampus();
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingBuilding, setEditingBuilding] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [buildingToDelete, setBuildingToDelete] = useState(null);
 
   const filteredBuildings = buildings.filter((building) =>
     building.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -34,7 +34,16 @@ function Buildings() {
   };
 
   const handleDeleteBuilding = (id) => {
-    deleteBuilding(id);
+    setBuildingToDelete(id);
+    setShowConfirmModal(true);
+  };
+
+  const confirmDeleteBuilding = () => {
+    if (buildingToDelete) {
+      deleteBuilding(buildingToDelete);
+      setBuildingToDelete(null);
+    }
+    setShowConfirmModal(false);
   };
 
   const handleShowDetails = (building) => {
@@ -82,8 +91,18 @@ function Buildings() {
         />
       )}
       {showDetailsModal && (
-        <BuildingDetailsModal building={showDetailsModal} onClose={() => setShowDetailsModal(null)} />
+        <BuildingDetailsModal
+          building={showDetailsModal}
+          rooms={rooms}
+          onClose={() => setShowDetailsModal(null)}
+        />
       )}
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={confirmDeleteBuilding}
+        message="Voulez-vous vraiment supprimer ce bâtiment et toutes ses salles associées ?"
+      />
     </div>
   );
 }

@@ -2,19 +2,18 @@ import React, { useState } from "react";
 import { FaPlus, FaUserCircle, FaSearch } from "react-icons/fa";
 import RoomList from "../components/RoomList";
 import RoomForm from "../components/RoomForm";
+import ConfirmationModal from "../components/ConfirmationModal";
 import { useCampus } from "../context/CampusContext";
 
-/**
- * Page pour gérer les salles avec recherche améliorée.
- */
 function Rooms() {
   const { buildings, rooms, addRoom, updateRoom, deleteRoom } = useCampus();
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingRoom, setEditingRoom] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [roomToDelete, setRoomToDelete] = useState(null);
 
-  const allRooms = buildings.flatMap((b) => b.rooms);
-  const filteredRooms = allRooms.filter((room) =>
+  const filteredRooms = rooms.filter((room) =>
     room.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -32,8 +31,17 @@ function Rooms() {
     setEditingRoom(null);
   };
 
-  const handleDeleteRoom = (id, buildingId) => {
-    deleteRoom(id, buildingId);
+  const handleDeleteRoom = (id) => {
+    setRoomToDelete(id);
+    setShowConfirmModal(true);
+  };
+
+  const confirmDeleteRoom = () => {
+    if (roomToDelete) {
+      deleteRoom(roomToDelete);
+      setRoomToDelete(null);
+    }
+    setShowConfirmModal(false);
   };
 
   return (
@@ -81,6 +89,12 @@ function Rooms() {
           onClose={() => setEditingRoom(null)}
         />
       )}
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={confirmDeleteRoom}
+        message="Voulez-vous vraiment supprimer cette salle ?"
+      />
     </div>
   );
 }

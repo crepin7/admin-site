@@ -2,6 +2,10 @@ import React from "react";
 import { FaEdit, FaTrash, FaExclamationTriangle } from "react-icons/fa";
 
 function RoomList({ rooms, buildings, onEdit, onDelete }) {
+  console.log("Depuis RoomList **************")
+  console.log("Rooms:", rooms);
+  console.log("Buildings:", buildings);
+
   return (
     <div className="mt-6">
       {rooms.length === 0 ? (
@@ -46,7 +50,7 @@ function RoomList({ rooms, buildings, onEdit, onDelete }) {
                     <FaEdit />
                   </button>
                   <button
-                    onClick={() => onDelete(room.id, room.buildingId)}
+                    onClick={() => onDelete(room.id)}
                     className="text-red-500 hover:text-red-700"
                     title="Supprimer"
                   >
