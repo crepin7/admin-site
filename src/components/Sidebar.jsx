@@ -1,52 +1,72 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaBuilding, FaDoorOpen, FaTools, FaSignOutAlt } from "react-icons/fa";
+import { logout } from "../services/AuthService";
 
-/**
- * Composant Sidebar pour la navigation avec thème indigo-500 et icône de déconnexion.
- */
 function Sidebar() {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
   return (
-    <div className="w-64 h-screen bg-indigo-500 text-white p-4 fixed flex flex-col justify-between">
+    <div className="w-64 h-screen bg-gray-900 text-white p-6 fixed flex flex-col justify-between shadow-lg">
       <div>
-        <h2 className="text-2xl font-bold mb-6">Admin Campus</h2>
+        <h2 className="text-2xl font-bold mb-8 text-indigo-400 tracking-wide">Tableau de bord Administrateur</h2>
         <nav>
-          <ul className="space-y-4">
+          <ul className="space-y-3">
             <li>
               <NavLink
-                to="/buildings"
+                to="/batiments"
                 className={({ isActive }) =>
-                  isActive ? "flex items-center text-indigo-200" : "flex items-center hover:text-indigo-100"
+                  `flex items-center p-3 rounded-lg transition-colors duration-200 ${
+                    isActive
+                      ? "bg-indigo-600 text-white"
+                      : "text-gray-300 hover:bg-gray-800 hover:text-indigo-300"
+                  }`
                 }
               >
-                <FaBuilding className="mr-2" /> Bâtiments
+                <FaBuilding className="mr-3" /> Bâtiments
               </NavLink>
             </li>
             <li>
               <NavLink
-                to="/rooms"
+                to="/salles"
                 className={({ isActive }) =>
-                  isActive ? "flex items-center text-indigo-200" : "flex items-center hover:text-indigo-100"
+                  `flex items-center p-3 rounded-lg transition-colors duration-200 ${
+                    isActive
+                      ? "bg-indigo-600 text-white"
+                      : "text-gray-300 hover:bg-gray-800 hover:text-indigo-300"
+                  }`
                 }
               >
-                <FaDoorOpen className="mr-2" /> Salles
+                <FaDoorOpen className="mr-3" /> Salles
               </NavLink>
             </li>
             <li>
               <NavLink
-                to="/other-infrastructures"
+                to="/autre-infrastructures"
                 className={({ isActive }) =>
-                  isActive ? "flex items-center text-indigo-200" : "flex items-center hover:text-indigo-100"
+                  `flex items-center p-3 rounded-lg transition-colors duration-200 ${
+                    isActive
+                      ? "bg-indigo-600 text-white"
+                      : "text-gray-300 hover:bg-gray-800 hover:text-indigo-300"
+                  }`
                 }
               >
-                <FaTools className="mr-2" /> Autres Infrastructures
+                <FaTools className="mr-3" /> Autres Infrastructures
               </NavLink>
             </li>
           </ul>
         </nav>
       </div>
-      <button className="flex items-center hover:text-indigo-100">
-        <FaSignOutAlt className="mr-2" /> Déconnexion
+      <button
+        onClick={handleLogout}
+        className="flex items-center p-3 rounded-lg text-gray-300 hover:bg-red-600 hover:text-white transition-colors duration-200"
+      >
+        <FaSignOutAlt className="mr-3" /> Déconnexion
       </button>
     </div>
   );

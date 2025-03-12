@@ -1,22 +1,17 @@
 import React, { useState } from "react";
 
-function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
+function BatimentForm({ onSubmit, initialData = {}, onClose }) {
   const [formData, setFormData] = useState({
     name: initialData.name || "",
-    capacity: initialData.capacity || "",
     description: initialData.description || "",
+    latitude: initialData.latitude || "",
+    longitude: initialData.longitude || "",
     image: initialData.image || "",
-    buildingId: initialData.buildingId || "", // Peut être un int ou une string au départ
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Convertir buildingId en entier dès le changement
-    if (name === "buildingId") {
-      setFormData((prev) => ({ ...prev, [name]: value ? parseInt(value, 10) : "" }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageUpload = (e) => {
@@ -32,20 +27,15 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // S'assurer que buildingId est un entier avant soumission
-    const submittedData = {
-      ...formData,
-      buildingId: parseInt(formData.buildingId, 10), // Conversion finale
-    };
-    onSubmit(submittedData);
+    onSubmit(formData);
     onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto shadow-lg">
+      <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-lg">
         <h2 className="text-xl font-bold text-indigo-500 mb-4">
-          {initialData.id ? "Modifier la salle" : "Ajouter une salle"}
+          {initialData.id ? "Modifier le bâtiment" : "Ajouter un bâtiment"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -60,17 +50,6 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Capacité</label>
-            <input
-              type="number"
-              name="capacity"
-              value={formData.capacity}
-              onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
-          </div>
-          <div>
             <label className="block text-sm font-medium text-gray-700">Description</label>
             <textarea
               name="description"
@@ -78,6 +57,30 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
               onChange={handleChange}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               rows="3"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Latitude</label>
+            <input
+              type="number"
+              name="latitude"
+              value={formData.latitude}
+              onChange={handleChange}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              step="any"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Longitude</label>
+            <input
+              type="number"
+              name="longitude"
+              value={formData.longitude}
+              onChange={handleChange}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              step="any"
+              required
             />
           </div>
           <div>
@@ -101,26 +104,9 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
               <img
                 src={formData.image}
                 alt="Prévisualisation"
-                className="mt-2 w-24 h-24 object-cover rounded"
+                className="mt-2 w-32 h-32 object-cover rounded"
               />
             )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Bâtiment</label>
-            <select
-              name="buildingId"
-              value={formData.buildingId}
-              onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            >
-              <option value="">Sélectionner un bâtiment</option>
-              {buildings.map((building) => (
-                <option key={building.id} value={building.id}>
-                  {building.name}
-                </option>
-              ))}
-            </select>
           </div>
           <div className="flex justify-end space-x-2">
             <button
@@ -143,4 +129,4 @@ function RoomForm({ onSubmit, initialData = {}, buildings, onClose }) {
   );
 }
 
-export default RoomForm;
+export default BatimentForm;

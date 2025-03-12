@@ -9,7 +9,7 @@ function InfrastructureDetailsModal({ infrastructure, onClose }) {
           <img
             src={infrastructure.image}
             alt={infrastructure.name}
-            className="w-full h-40 object-cover rounded mb-4"
+            className="w-full h-80 object-cover rounded mb-4"
           />
         ) : (
           <div className="w-full h-40 bg-gray-200 rounded mb-4 flex items-center justify-center text-gray-500">

@@ -1,7 +1,7 @@
 import React from "react";
 import { FaExclamationTriangle } from "react-icons/fa";
 
-function BuildingDetailsModal({ building, rooms, onClose }) {
+function BatimentDetailsModal({ building, rooms, onClose }) {
   const buildingRooms = rooms.filter((room) => room.buildingId === building.id);
 
   return (
@@ -12,7 +12,7 @@ function BuildingDetailsModal({ building, rooms, onClose }) {
           <img
             src={building.image}
             alt={building.name}
-            className="w-full h-40 object-cover rounded mb-4"
+            className="w-full h-80 object-cover rounded mb-4"
           />
         ) : (
           <div className="w-full h-40 bg-gray-200 rounded mb-4 flex items-center justify-center text-gray-500">
@@ -70,4 +70,4 @@ function BuildingDetailsModal({ building, rooms, onClose }) {
   );
 }
 
-export default BuildingDetailsModal;
+export default BatimentDetailsModal;

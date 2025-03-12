@@ -4,10 +4,12 @@ import InfrastructureList from "../components/InfrastructureList";
 import InfrastructureForm from "../components/InfrastructureForm";
 import InfrastructureDetailsModal from "../components/InfrastructureDetailsModal";
 import ConfirmationModal from "../components/ConfirmationModal";
+import Spinner from "../components/Spinner";
 import { useCampus } from "../context/CampusContext";
+import { toast } from "react-toastify";
 
-function OtherInfrastructures() {
-  const { infrastructures, addInfrastructure, updateInfrastructure, deleteInfrastructure } = useCampus();
+function AutreInfrastructures() {
+  const { infrastructures, addInfrastructure, updateInfrastructure, deleteInfrastructure, loading } = useCampus();
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingInfrastructure, setEditingInfrastructure] = useState(null);
@@ -19,18 +21,40 @@ function OtherInfrastructures() {
     infra.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleAddInfrastructure = (newInfrastructure) => {
-    addInfrastructure(newInfrastructure);
-    setShowAddModal(false);
+  const handleAddInfrastructure = async (newInfrastructure) => {
+    try {
+      await addInfrastructure(newInfrastructure);
+      setShowAddModal(false);
+      toast.success("Infrastructure ajoutée avec succès !", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      toast.error("Erreur lors de l'ajout de l'infrastructure.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
   };
 
   const handleEditInfrastructure = (infra) => {
     setEditingInfrastructure(infra);
   };
 
-  const handleUpdateInfrastructure = (updatedInfrastructure) => {
-    updateInfrastructure({ ...updatedInfrastructure, id: editingInfrastructure.id });
-    setEditingInfrastructure(null);
+  const handleUpdateInfrastructure = async (updatedInfrastructure) => {
+    try {
+      await updateInfrastructure({ ...updatedInfrastructure, id: editingInfrastructure.id });
+      setEditingInfrastructure(null);
+      toast.success("Infrastructure modifiée avec succès !", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      toast.error("Erreur lors de la modification de l'infrastructure.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
   };
 
   const handleDeleteInfrastructure = (id) => {
@@ -38,22 +62,37 @@ function OtherInfrastructures() {
     setShowConfirmModal(true);
   };
 
-  const confirmDeleteInfrastructure = () => {
+  const confirmDeleteInfrastructure = async () => {
     if (infraToDelete) {
-      deleteInfrastructure(infraToDelete);
-      setInfraToDelete(null);
+      try {
+        await deleteInfrastructure(infraToDelete);
+        setInfraToDelete(null);
+        setShowConfirmModal(false);
+        toast.success("Infrastructure supprimée avec succès !", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      } catch (error) {
+        toast.error("Erreur lors de la suppression de l'infrastructure.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
     }
-    setShowConfirmModal(false);
   };
 
   const handleShowDetails = (infra) => {
     setShowDetailsModal(infra);
   };
 
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <div className="relative">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-indigo-500">Gestion des Autres Infrastructures</h1>
+        <h1 className="text-3xl font-bold text-indigo-500">Gestion des autres infrastructures</h1>
         <FaUserCircle className="text-indigo-500 text-3xl" title="Administrateur" />
       </div>
       <div className="flex justify-between items-center mb-6">
@@ -64,7 +103,7 @@ function OtherInfrastructures() {
             placeholder="Rechercher une infrastructure..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full pl-10 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
         <button
@@ -106,4 +145,4 @@ function OtherInfrastructures() {
   );
 }
 
-export default OtherInfrastructures;
+export default AutreInfrastructures;

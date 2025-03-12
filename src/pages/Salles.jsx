@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { FaPlus, FaUserCircle, FaSearch } from "react-icons/fa";
-import RoomList from "../components/RoomList";
-import RoomForm from "../components/RoomForm";
+import SalleList from "../components/SalleList";
+import SalleForm from "../components/SalleForm";
 import ConfirmationModal from "../components/ConfirmationModal";
+import Spinner from "../components/Spinner";
 import { useCampus } from "../context/CampusContext";
+import { toast } from "react-toastify";
 
-function Rooms() {
-  const { buildings, rooms, addRoom, updateRoom, deleteRoom } = useCampus();
+function Salles() {
+  const { buildings, rooms, addRoom, updateRoom, deleteRoom, loading } = useCampus();
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingRoom, setEditingRoom] = useState(null);
@@ -17,18 +19,40 @@ function Rooms() {
     room.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleAddRoom = (newRoom) => {
-    addRoom(newRoom);
-    setShowAddModal(false);
+  const handleAddRoom = async (newRoom) => {
+    try {
+      await addRoom(newRoom);
+      setShowAddModal(false);
+      toast.success("Salle ajoutée avec succès !", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      toast.error("Erreur lors de l'ajout de la salle.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
   };
 
   const handleEditRoom = (room) => {
     setEditingRoom(room);
   };
 
-  const handleUpdateRoom = (updatedRoom) => {
-    updateRoom({ ...updatedRoom, id: editingRoom.id });
-    setEditingRoom(null);
+  const handleUpdateRoom = async (updatedRoom) => {
+    try {
+      await updateRoom({ ...updatedRoom, id: editingRoom.id });
+      setEditingRoom(null);
+      toast.success("Salle modifiée avec succès !", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      toast.error("Erreur lors de la modification de la salle.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
   };
 
   const handleDeleteRoom = (id) => {
@@ -36,18 +60,33 @@ function Rooms() {
     setShowConfirmModal(true);
   };
 
-  const confirmDeleteRoom = () => {
+  const confirmDeleteRoom = async () => {
     if (roomToDelete) {
-      deleteRoom(roomToDelete);
-      setRoomToDelete(null);
+      try {
+        await deleteRoom(roomToDelete);
+        setRoomToDelete(null);
+        setShowConfirmModal(false);
+        toast.success("Salle supprimée avec succès !", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      } catch (error) {
+        toast.error("Erreur lors de la suppression de la salle.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
     }
-    setShowConfirmModal(false);
   };
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="relative">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-indigo-500">Gestion des Salles</h1>
+        <h1 className="text-3xl font-bold text-indigo-500">Gestion des salles</h1>
         <FaUserCircle className="text-indigo-500 text-3xl" title="Administrateur" />
       </div>
       <div className="flex justify-between items-center mb-6">
@@ -58,7 +97,7 @@ function Rooms() {
             placeholder="Rechercher une salle..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full pl-10 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
         <button
@@ -68,21 +107,21 @@ function Rooms() {
           <FaPlus className="mr-2" /> Ajouter une salle
         </button>
       </div>
-      <RoomList
+      <SalleList
         rooms={filteredRooms}
         buildings={buildings}
         onEdit={handleEditRoom}
         onDelete={handleDeleteRoom}
       />
       {showAddModal && (
-        <RoomForm
+        <SalleForm
           onSubmit={handleAddRoom}
           buildings={buildings}
           onClose={() => setShowAddModal(false)}
         />
       )}
       {editingRoom && (
-        <RoomForm
+        <SalleForm
           onSubmit={handleUpdateRoom}
           initialData={editingRoom}
           buildings={buildings}
@@ -99,4 +138,4 @@ function Rooms() {
   );
 }
 
-export default Rooms;
+export default Salles;

@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { FaPlus, FaUserCircle, FaSearch } from "react-icons/fa";
-import BuildingList from "../components/BuildingList";
-import BuildingForm from "../components/BuildingForm";
-import BuildingDetailsModal from "../components/BuildingDetailsModal";
+import BuildingList from "../components/BatimentList";
+import BuildingForm from "../components/BatimentForm";
+import BuildingDetailsModal from "../components/BatimentDetailsModal";
 import ConfirmationModal from "../components/ConfirmationModal";
+import Spinner from "../components/Spinner";
 import { useCampus } from "../context/CampusContext";
+import { toast } from "react-toastify";
 
-function Buildings() {
-  const { buildings, rooms, addBuilding, updateBuilding, deleteBuilding } = useCampus();
+function Batiments() {
+  const { buildings, rooms, addBuilding, updateBuilding, deleteBuilding, loading } = useCampus();
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingBuilding, setEditingBuilding] = useState(null);
@@ -19,18 +21,40 @@ function Buildings() {
     building.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleAddBuilding = (newBuilding) => {
-    addBuilding(newBuilding);
-    setShowAddModal(false);
+  const handleAddBuilding = async (newBuilding) => {
+    try {
+      await addBuilding(newBuilding);
+      setShowAddModal(false);
+      toast.success("Bâtiment ajouté avec succès !", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      toast.error("Erreur lors de l'ajout du bâtiment.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
   };
 
   const handleEditBuilding = (building) => {
     setEditingBuilding(building);
   };
 
-  const handleUpdateBuilding = (updatedBuilding) => {
-    updateBuilding({ ...updatedBuilding, id: editingBuilding.id });
-    setEditingBuilding(null);
+  const handleUpdateBuilding = async (updatedBuilding) => {
+    try {
+      await updateBuilding({ ...updatedBuilding, id: editingBuilding.id });
+      setEditingBuilding(null);
+      toast.success("Bâtiment modifié avec succès !", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      toast.error("Erreur lors de la modification du bâtiment.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
   };
 
   const handleDeleteBuilding = (id) => {
@@ -38,22 +62,37 @@ function Buildings() {
     setShowConfirmModal(true);
   };
 
-  const confirmDeleteBuilding = () => {
+  const confirmDeleteBuilding = async () => {
     if (buildingToDelete) {
-      deleteBuilding(buildingToDelete);
-      setBuildingToDelete(null);
+      try {
+        await deleteBuilding(buildingToDelete);
+        setBuildingToDelete(null);
+        setShowConfirmModal(false);
+        toast.success("Bâtiment supprimé avec succès !", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      } catch (error) {
+        toast.error("Erreur lors de la suppression du bâtiment.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
     }
-    setShowConfirmModal(false);
   };
 
   const handleShowDetails = (building) => {
     setShowDetailsModal(building);
   };
 
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <div className="relative">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-indigo-500">Gestion des Bâtiments</h1>
+        <h1 className="text-3xl font-bold text-indigo-500">Gestion des bâtiments</h1>
         <FaUserCircle className="text-indigo-500 text-3xl" title="Administrateur" />
       </div>
       <div className="flex justify-between items-center mb-6">
@@ -107,4 +146,4 @@ function Buildings() {
   );
 }
 
-export default Buildings;
+export default Batiments;

@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 
-function BuildingForm({ onSubmit, initialData = {}, onClose }) {
+function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
   const [formData, setFormData] = useState({
     name: initialData.name || "",
+    capacity: initialData.capacity || "",
     description: initialData.description || "",
-    latitude: initialData.latitude || "",
-    longitude: initialData.longitude || "",
     image: initialData.image || "",
+    buildingId: initialData.buildingId || "", // Gardé comme string
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // Pas de conversion en entier pour buildingId, on garde la chaîne
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -27,15 +28,19 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    // Pas de parseInt, on soumet buildingId tel quel (string)
+    const submittedData = {
+      ...formData,
+    };
+    onSubmit(submittedData);
     onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-lg">
+      <div className="bg-white p-6 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto shadow-lg">
         <h2 className="text-xl font-bold text-indigo-500 mb-4">
-          {initialData.id ? "Modifier le bâtiment" : "Ajouter un bâtiment"}
+          {initialData.id ? "Modifier la salle" : "Ajouter une salle"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -50,6 +55,17 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
             />
           </div>
           <div>
+            <label className="block text-sm font-medium text-gray-700">Capacité</label>
+            <input
+              type="number"
+              name="capacity"
+              value={formData.capacity}
+              onChange={handleChange}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-gray-700">Description</label>
             <textarea
               name="description"
@@ -57,30 +73,6 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
               onChange={handleChange}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               rows="3"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Latitude</label>
-            <input
-              type="number"
-              name="latitude"
-              value={formData.latitude}
-              onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              step="any"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Longitude</label>
-            <input
-              type="number"
-              name="longitude"
-              value={formData.longitude}
-              onChange={handleChange}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              step="any"
-              required
             />
           </div>
           <div>
@@ -104,9 +96,26 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
               <img
                 src={formData.image}
                 alt="Prévisualisation"
-                className="mt-2 w-32 h-32 object-cover rounded"
+                className="mt-2 w-24 h-24 object-cover rounded"
               />
             )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Bâtiment</label>
+            <select
+              name="buildingId"
+              value={formData.buildingId}
+              onChange={handleChange}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            >
+              <option value="">Sélectionner un bâtiment</option>
+              {buildings.map((building) => (
+                <option key={building.id} value={building.id}>
+                  {building.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex justify-end space-x-2">
             <button
@@ -129,4 +138,4 @@ function BuildingForm({ onSubmit, initialData = {}, onClose }) {
   );
 }
 
-export default BuildingForm;
+export default SalleForm;
