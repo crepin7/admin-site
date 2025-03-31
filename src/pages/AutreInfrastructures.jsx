@@ -11,15 +11,20 @@ import { toast } from "react-toastify";
 function AutreInfrastructures() {
   const { infrastructures, addInfrastructure, updateInfrastructure, deleteInfrastructure, loading } = useCampus();
   const [searchQuery, setSearchQuery] = useState("");
+  const [situationFilter, setSituationFilter] = useState("Tous"); // Nouveau filtre
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingInfrastructure, setEditingInfrastructure] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [infraToDelete, setInfraToDelete] = useState(null);
 
-  const filteredInfrastructures = infrastructures.filter((infra) =>
-    infra.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredInfrastructures = infrastructures
+    .filter((infra) =>
+      infra.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .filter((infra) =>
+      situationFilter === "Tous" ? true : infra.situation === situationFilter
+    );
 
   const handleAddInfrastructure = async (newInfrastructure) => {
     try {
@@ -95,8 +100,8 @@ function AutreInfrastructures() {
         <h1 className="text-3xl font-bold text-indigo-500">Gestion des autres infrastructures</h1>
         <FaUserCircle className="text-indigo-500 text-3xl" title="Administrateur" />
       </div>
-      <div className="flex justify-between items-center mb-6">
-        <div className="relative w-1/2">
+      <div className="flex justify-between items-center mb-6 space-x-4">
+        <div className="relative w-1/3">
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             type="text"
@@ -105,6 +110,17 @@ function AutreInfrastructures() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
+        </div>
+        <div className="w-1/3">
+          <select
+            value={situationFilter}
+            onChange={(e) => setSituationFilter(e.target.value)}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="Tous">Tous les campus</option>
+            <option value="Campus nord">Campus nord</option>
+            <option value="Campus sud">Campus sud</option>
+          </select>
         </div>
         <button
           onClick={() => setShowAddModal(true)}

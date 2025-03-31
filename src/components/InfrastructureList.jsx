@@ -31,6 +31,8 @@ function InfrastructureList({ infrastructures, onEdit, onDelete, onShowDetails }
                 <div className="p-4">
                   <h3 className="text-lg font-semibold text-indigo-500">{infra.name}</h3>
                   <p className="text-gray-600 text-sm truncate">{infra.description}</p>
+                  <p className="text-gray-500 text-sm">Type: {infra.type || "Non spécifié"}</p>
+                  <p className="text-gray-500 text-sm">Situation: {infra.situation}</p>
                   <div className="flex justify-end space-x-3 mt-3">
                     <button
                       onClick={() => onShowDetails(infra)}

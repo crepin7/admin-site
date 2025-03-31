@@ -20,6 +20,8 @@ function BatimentDetailsModal({ building, rooms, onClose }) {
           </div>
         )}
         <div className="space-y-4">
+          <p><strong>Type:</strong> {building.type || "Non spécifié"}</p>
+          <p><strong>Situation:</strong> {building.situation || "Non spécifiée"}</p>
           <p><strong>Description:</strong> {building.description || "Aucune description"}</p>
           <p><strong>Latitude:</strong> {building.latitude}</p>
           <p><strong>Longitude:</strong> {building.longitude}</p>

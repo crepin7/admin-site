@@ -17,6 +17,8 @@ function InfrastructureDetailsModal({ infrastructure, onClose }) {
           </div>
         )}
         <div className="space-y-2">
+          <p><strong>Type:</strong> {infrastructure.type || "Non spécifié"}</p>
+          <p><strong>Situation:</strong> {infrastructure.situation || "Non spécifiée"}</p>
           <p><strong>Description:</strong> {infrastructure.description || "Aucune description"}</p>
           <p><strong>Latitude:</strong> {infrastructure.latitude}</p>
           <p><strong>Longitude:</strong> {infrastructure.longitude}</p>

@@ -7,6 +7,8 @@ function InfrastructureForm({ onSubmit, initialData = {}, onClose }) {
     latitude: initialData.latitude || "",
     longitude: initialData.longitude || "",
     image: initialData.image || "",
+    type: initialData.type || "", // Nouveau champ
+    situation: initialData.situation || "Campus nord", // Default à "Campus nord"
   });
 
   const handleChange = (e) => {
@@ -48,6 +50,30 @@ function InfrastructureForm({ onSubmit, initialData = {}, onClose }) {
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Type</label>
+            <input
+              type="text"
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Situation</label>
+            <select
+              name="situation"
+              value={formData.situation}
+              onChange={handleChange}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            >
+              <option value="Campus nord">Campus nord</option>
+              <option value="Campus sud">Campus sud</option>
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Description</label>

@@ -31,6 +31,8 @@ function BatimentList({ buildings, onEdit, onDelete, onShowDetails }) {
                 <div className="p-4">
                   <h3 className="text-lg font-semibold text-indigo-500">{building.name}</h3>
                   <p className="text-gray-600 text-sm truncate">{building.description}</p>
+                  <p className="text-gray-500 text-sm">Type: {building.type || "Non spécifié"}</p>
+                  <p className="text-gray-500 text-sm">Situation: {building.situation}</p>
                   <div className="flex justify-end space-x-3 mt-3">
                     <button
                       onClick={() => onShowDetails(building)}
