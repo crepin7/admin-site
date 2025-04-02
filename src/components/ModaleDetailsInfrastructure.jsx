@@ -1,6 +1,12 @@
 import React from "react";
 
-function InfrastructureDetailsModal({ infrastructure, onClose }) {
+/**
+ * Modale affichant les détails d'une infrastructure.
+ * @param {Object} props - Propriétés du composant.
+ * @param {Object} props.infrastructure - Données de l'infrastructure.
+ * @param {Function} props.onClose - Fonction pour fermer la modale.
+ */
+function ModaleDetailsInfrastructure({ infrastructure, onClose }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-lg">
@@ -34,4 +40,4 @@ function InfrastructureDetailsModal({ infrastructure, onClose }) {
   );
 }
 
-export default InfrastructureDetailsModal;
+export default ModaleDetailsInfrastructure;

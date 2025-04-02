@@ -1,14 +1,20 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaBuilding, FaDoorOpen, FaTools, FaSignOutAlt } from "react-icons/fa";
-import { logout } from "../services/AuthService";
+import { seDeconnecter } from "../services/AuthService";
 
-function Sidebar() {
-  const navigate = useNavigate();
+/**
+ * Barre latérale de navigation pour le tableau de bord administrateur.
+ */
+function BarreLaterale() {
+  const naviguer = useNavigate();
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
+  /**
+   * Gère la déconnexion de l'utilisateur.
+   */
+  const gererDeconnexion = async () => {
+    await seDeconnecter();
+    naviguer("/connexion");
   };
 
   return (
@@ -47,7 +53,7 @@ function Sidebar() {
             </li>
             <li>
               <NavLink
-                to="/autre-infrastructures"
+                to="/autres-infrastructures"
                 className={({ isActive }) =>
                   `flex items-center p-3 rounded-lg transition-colors duration-200 ${
                     isActive
@@ -63,7 +69,7 @@ function Sidebar() {
         </nav>
       </div>
       <button
-        onClick={handleLogout}
+        onClick={gererDeconnexion}
         className="flex items-center p-3 rounded-lg text-gray-300 hover:bg-red-600 hover:text-white transition-colors duration-200"
       >
         <FaSignOutAlt className="mr-3" /> Déconnexion
@@ -72,4 +78,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default BarreLaterale;

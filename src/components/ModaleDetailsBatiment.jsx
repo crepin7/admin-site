@@ -1,17 +1,25 @@
 import React from "react";
 import { FaExclamationTriangle } from "react-icons/fa";
 
-function BatimentDetailsModal({ building, rooms, onClose }) {
-  const buildingRooms = rooms.filter((room) => room.buildingId === building.id);
+/**
+ * Modale affichant les détails d'un bâtiment et ses salles associées.
+ * @param {Object} props - Propriétés du composant.
+ * @param {Object} props.batiment - Données du bâtiment.
+ * @param {Array} props.salles - Liste des salles associées.
+ * @param {Function} props.onClose - Fonction pour fermer la modale.
+ */
+function ModaleDetailsBatiment({ batiment, salles, onClose }) {
+  // Filtrer les salles associées au bâtiment
+  const sallesDuBatiment = salles.filter((salle) => salle.buildingId === batiment.id);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-lg">
-        <h2 className="text-xl font-bold text-indigo-500 mb-4">{building.nom}</h2>
-        {building.image ? (
+        <h2 className="text-xl font-bold text-indigo-500 mb-4">{batiment.nom}</h2>
+        {batiment.image ? (
           <img
-            src={building.image}
-            alt={building.nom}
+            src={batiment.image}
+            alt={batiment.nom}
             className="w-full h-80 object-cover rounded mb-4"
           />
         ) : (
@@ -20,13 +28,13 @@ function BatimentDetailsModal({ building, rooms, onClose }) {
           </div>
         )}
         <div className="space-y-4">
-          <p><strong>Type:</strong> {building.type || "Non spécifié"}</p>
-          <p><strong>Situation:</strong> {building.situation || "Non spécifiée"}</p>
-          <p><strong>Description:</strong> {building.description || "Aucune description"}</p>
-          <p><strong>Latitude:</strong> {building.latitude}</p>
-          <p><strong>Longitude:</strong> {building.longitude}</p>
+          <p><strong>Type:</strong> {batiment.type || "Non spécifié"}</p>
+          <p><strong>Situation:</strong> {batiment.situation || "Non spécifiée"}</p>
+          <p><strong>Description:</strong> {batiment.description || "Aucune description"}</p>
+          <p><strong>Latitude:</strong> {batiment.latitude}</p>
+          <p><strong>Longitude:</strong> {batiment.longitude}</p>
           <p><strong>Salles:</strong></p>
-          {buildingRooms.length === 0 ? (
+          {sallesDuBatiment.length === 0 ? (
             <div className="flex items-center text-gray-500">
               <FaExclamationTriangle className="mr-2" />
               Aucune salle
@@ -34,24 +42,24 @@ function BatimentDetailsModal({ building, rooms, onClose }) {
           ) : (
             <div className="bg-gray-100 p-4 rounded-lg shadow-inner">
               <ul className="space-y-3">
-                {buildingRooms.map((room) => (
+                {sallesDuBatiment.map((salle) => (
                   <li
-                    key={room.id}
+                    key={salle.id}
                     className="flex items-center justify-between bg-white p-3 rounded-md shadow-sm hover:bg-gray-50 transition-colors"
                   >
                     <div>
-                      <span className="font-semibold text-indigo-600">{room.nom}</span>
+                      <span className="font-semibold text-indigo-600">{salle.nom}</span>
                       <span className="text-sm text-gray-600 ml-2">
-                        (Capacité: {room.capacite})
+                        (Capacité: {salle.capacite})
                       </span>
                       <p className="text-sm text-gray-500">
-                        {room.description || "Aucune description"}
+                        {salle.description || "Aucune description"}
                       </p>
                     </div>
-                    {room.image && (
+                    {salle.image && (
                       <img
-                        src={room.image}
-                        alt={room.nom}
+                        src={salle.image}
+                        alt={salle.nom}
                         className="w-12 h-12 object-cover rounded-full ml-2"
                       />
                     )}
@@ -72,4 +80,4 @@ function BatimentDetailsModal({ building, rooms, onClose }) {
   );
 }
 
-export default BatimentDetailsModal;
+export default ModaleDetailsBatiment;

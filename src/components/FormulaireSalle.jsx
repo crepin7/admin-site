@@ -1,38 +1,53 @@
 import React, { useState } from "react";
 
-function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
-  const [formData, setFormData] = useState({
+/**
+ * Formulaire pour ajouter ou modifier une salle.
+ * @param {Object} props - Propriétés du composant.
+ * @param {Function} props.onSubmit - Fonction appelée lors de la soumission.
+ * @param {Object} props.initialData - Données initiales pour l'édition.
+ * @param {Array} props.batiments - Liste des bâtiments disponibles.
+ * @param {Function} props.onClose - Fonction pour fermer le formulaire.
+ */
+function FormulaireSalle({ onSubmit, initialData = {}, batiments, onClose }) {
+  const [donneesFormulaire, setDonneesFormulaire] = useState({
     nom: initialData.nom || "",
     capacite: initialData.capacite || "",
     description: initialData.description || "",
     image: initialData.image || "",
-    buildingId: initialData.buildingId || "", // Gardé comme string
+    buildingId: initialData.buildingId || "",
   });
 
-  const handleChange = (e) => {
+  /**
+   * Gère les changements dans les champs du formulaire.
+   * @param {Event} e - Événement de changement.
+   */
+  const gererChangement = (e) => {
     const { name, value } = e.target;
-    // Pas de conversion en entier pour buildingId, on garde la chaîne
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setDonneesFormulaire((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, image: reader.result }));
+  /**
+   * Gère l'upload d'une image.
+   * @param {Event} e - Événement de changement de fichier.
+   */
+  const gererUploadImage = (e) => {
+    const fichier = e.target.files[0];
+    if (fichier) {
+      const lecteur = new FileReader();
+      lecteur.onloadend = () => {
+        setDonneesFormulaire((prev) => ({ ...prev, image: lecteur.result }));
       };
-      reader.readAsDataURL(file);
+      lecteur.readAsDataURL(fichier);
     }
   };
 
-  const handleSubmit = (e) => {
+  /**
+   * Gère la soumission du formulaire.
+   * @param {Event} e - Événement de soumission.
+   */
+  const gererSoumission = (e) => {
     e.preventDefault();
-    // Pas de parseInt, on soumet buildingId tel quel (string)
-    const submittedData = {
-      ...formData,
-    };
-    onSubmit(submittedData);
+    onSubmit(donneesFormulaire);
     onClose();
   };
 
@@ -42,14 +57,14 @@ function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
         <h2 className="text-xl font-bold text-indigo-500 mb-4">
           {initialData.id ? "Modifier la salle" : "Ajouter une salle"}
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={gererSoumission} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Nom</label>
             <input
               type="text"
               name="nom"
-              value={formData.nom}
-              onChange={handleChange}
+              value={donneesFormulaire.nom}
+              onChange={gererChangement}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
@@ -59,8 +74,8 @@ function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
             <input
               type="number"
               name="capacite"
-              value={formData.capacite}
-              onChange={handleChange}
+              value={donneesFormulaire.capacite}
+              onChange={gererChangement}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
@@ -69,8 +84,8 @@ function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
             <label className="block text-sm font-medium text-gray-700">Description</label>
             <textarea
               name="description"
-              value={formData.description}
-              onChange={handleChange}
+              value={donneesFormulaire.description}
+              onChange={gererChangement}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               rows="3"
             />
@@ -80,8 +95,8 @@ function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
             <input
               type="url"
               name="image"
-              value={formData.image.startsWith("data:") ? "" : formData.image}
-              onChange={handleChange}
+              value={donneesFormulaire.image.startsWith("data:") ? "" : donneesFormulaire.image}
+              onChange={gererChangement}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="URL de l'image"
             />
@@ -89,12 +104,12 @@ function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
             <input
               type="file"
               accept="image/*"
-              onChange={handleImageUpload}
+              onChange={gererUploadImage}
               className="w-full p-2"
             />
-            {formData.image && (
+            {donneesFormulaire.image && (
               <img
-                src={formData.image}
+                src={donneesFormulaire.image}
                 alt="Prévisualisation"
                 className="mt-2 w-24 h-24 object-cover rounded"
               />
@@ -104,15 +119,15 @@ function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
             <label className="block text-sm font-medium text-gray-700">Bâtiment</label>
             <select
               name="buildingId"
-              value={formData.buildingId}
-              onChange={handleChange}
+              value={donneesFormulaire.buildingId}
+              onChange={gererChangement}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             >
               <option value="">Sélectionner un bâtiment</option>
-              {buildings.map((building) => (
-                <option key={building.id} value={building.id}>
-                  {building.nom}
+              {batiments.map((batiment) => (
+                <option key={batiment.id} value={batiment.id}>
+                  {batiment.nom}
                 </option>
               ))}
             </select>
@@ -138,4 +153,4 @@ function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
   );
 }
 
-export default SalleForm;
+export default FormulaireSalle;

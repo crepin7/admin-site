@@ -1,97 +1,103 @@
 import React, { useState } from "react";
 import { FaPlus, FaUserCircle, FaSearch } from "react-icons/fa";
-import InfrastructureList from "../components/InfrastructureList";
-import InfrastructureForm from "../components/InfrastructureForm";
-import InfrastructureDetailsModal from "../components/InfrastructureDetailsModal";
-import ConfirmationModal from "../components/ConfirmationModal";
-import Spinner from "../components/Spinner";
-import { useCampus } from "../context/CampusContext";
+import ListeInfrastructures from "../components/ListeInfrastructures";
+import FormulaireInfrastructure from "../components/FormulaireInfrastructure";
+import ModaleDetailsInfrastructure from "../components/ModaleDetailsInfrastructure";
+import ModaleConfirmation from "../components/ModaleConfirmation";
+import IndicateurChargement from "../components/IndicateurChargement";
+import { utiliserCampus } from "../context/CampusContext";
 import { toast } from "react-toastify";
 
-function AutreInfrastructures() {
-  const { infrastructures, addInfrastructure, updateInfrastructure, deleteInfrastructure, loading } = useCampus();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [situationFilter, setSituationFilter] = useState("Tous"); // Nouveau filtre
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [editingInfrastructure, setEditingInfrastructure] = useState(null);
-  const [showDetailsModal, setShowDetailsModal] = useState(null);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [infraToDelete, setInfraToDelete] = useState(null);
+/**
+ * Page de gestion des autres infrastructures.
+ * Permet d'ajouter, modifier, supprimer et voir les détails des infrastructures.
+ */
+function AutresInfrastructures() {
+  const { infrastructures, ajouterInfrastructure, mettreAJourInfrastructure, supprimerInfrastructure, chargement } = utiliserCampus();
+  const [recherche, setRecherche] = useState("");
+  const [filtreSituation, setFiltreSituation] = useState("Tous"); // Filtre par situation
+  const [afficherModaleAjout, setAfficherModaleAjout] = useState(false);
+  const [infrastructureEnEdition, setInfrastructureEnEdition] = useState(null);
+  const [afficherModaleDetails, setAfficherModaleDetails] = useState(null);
+  const [afficherModaleConfirmation, setAfficherModaleConfirmation] = useState(false);
+  const [infrastructureASupprimer, setInfrastructureASupprimer] = useState(null);
 
-  const filteredInfrastructures = infrastructures
-    .filter((infra) =>
-      infra.nom.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .filter((infra) =>
-      situationFilter === "Tous" ? true : infra.situation === situationFilter
-    );
+  // Filtrer les infrastructures selon la recherche et la situation
+  const infrastructuresFiltrees = infrastructures
+    .filter((infra) => infra.nom.toLowerCase().includes(recherche.toLowerCase()))
+    .filter((infra) => filtreSituation === "Tous" ? true : infra.situation === filtreSituation);
 
-  const handleAddInfrastructure = async (newInfrastructure) => {
+  /**
+   * Ajoute une nouvelle infrastructure.
+   * @param {Object} nouvelleInfrastructure - Données de la nouvelle infrastructure.
+   */
+  const gererAjoutInfrastructure = async (nouvelleInfrastructure) => {
     try {
-      await addInfrastructure(newInfrastructure);
-      setShowAddModal(false);
-      toast.success("Infrastructure ajoutée avec succès !", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-    } catch (error) {
-      toast.error("Erreur lors de l'ajout de l'infrastructure.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      await ajouterInfrastructure(nouvelleInfrastructure);
+      setAfficherModaleAjout(false);
+      toast.success("Infrastructure ajoutée avec succès !", { position: "top-right", autoClose: 3000 });
+    } catch (erreur) {
+      toast.error("Erreur lors de l'ajout de l'infrastructure.", { position: "top-right", autoClose: 3000 });
     }
   };
 
-  const handleEditInfrastructure = (infra) => {
-    setEditingInfrastructure(infra);
+  /**
+   * Prépare l'édition d'une infrastructure.
+   * @param {Object} infra - Infrastructure à éditer.
+   */
+  const gererEditionInfrastructure = (infra) => {
+    setInfrastructureEnEdition(infra);
   };
 
-  const handleUpdateInfrastructure = async (updatedInfrastructure) => {
+  /**
+   * Met à jour une infrastructure existante.
+   * @param {Object} infrastructureMiseAJour - Données mises à jour de l'infrastructure.
+   */
+  const gererMiseAJourInfrastructure = async (infrastructureMiseAJour) => {
     try {
-      await updateInfrastructure({ ...updatedInfrastructure, id: editingInfrastructure.id });
-      setEditingInfrastructure(null);
-      toast.success("Infrastructure modifiée avec succès !", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-    } catch (error) {
-      toast.error("Erreur lors de la modification de l'infrastructure.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      await mettreAJourInfrastructure({ ...infrastructureMiseAJour, id: infrastructureEnEdition.id });
+      setInfrastructureEnEdition(null);
+      toast.success("Infrastructure modifiée avec succès !", { position: "top-right", autoClose: 3000 });
+    } catch (erreur) {
+      toast.error("Erreur lors de la modification de l'infrastructure.", { position: "top-right", autoClose: 3000 });
     }
   };
 
-  const handleDeleteInfrastructure = (id) => {
-    setInfraToDelete(id);
-    setShowConfirmModal(true);
+  /**
+   * Prépare la suppression d'une infrastructure.
+   * @param {string} id - ID de l'infrastructure à supprimer.
+   */
+  const gererSuppressionInfrastructure = (id) => {
+    setInfrastructureASupprimer(id);
+    setAfficherModaleConfirmation(true);
   };
 
-  const confirmDeleteInfrastructure = async () => {
-    if (infraToDelete) {
+  /**
+   * Confirme la suppression d'une infrastructure.
+   */
+  const confirmerSuppressionInfrastructure = async () => {
+    if (infrastructureASupprimer) {
       try {
-        await deleteInfrastructure(infraToDelete);
-        setInfraToDelete(null);
-        setShowConfirmModal(false);
-        toast.success("Infrastructure supprimée avec succès !", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-      } catch (error) {
-        toast.error("Erreur lors de la suppression de l'infrastructure.", {
-          position: "top-right",
-          autoClose: 3000,
-        });
+        await supprimerInfrastructure(infrastructureASupprimer);
+        setInfrastructureASupprimer(null);
+        setAfficherModaleConfirmation(false);
+        toast.success("Infrastructure supprimée avec succès !", { position: "top-right", autoClose: 3000 });
+      } catch (erreur) {
+        toast.error("Erreur lors de la suppression de l'infrastructure.", { position: "top-right", autoClose: 3000 });
       }
     }
   };
 
-  const handleShowDetails = (infra) => {
-    setShowDetailsModal(infra);
+  /**
+   * Affiche les détails d'une infrastructure.
+   * @param {Object} infra - Infrastructure dont on veut voir les détails.
+   */
+  const gererAffichageDetails = (infra) => {
+    setAfficherModaleDetails(infra);
   };
 
-  if (loading) {
-    return <Spinner />;
+  if (chargement) {
+    return <IndicateurChargement />;
   }
 
   return (
@@ -106,15 +112,15 @@ function AutreInfrastructures() {
           <input
             type="text"
             placeholder="Rechercher une infrastructure..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            value={recherche}
+            onChange={(e) => setRecherche(e.target.value)}
             className="w-full pl-10 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
         <div className="w-1/3">
           <select
-            value={situationFilter}
-            onChange={(e) => setSituationFilter(e.target.value)}
+            value={filtreSituation}
+            onChange={(e) => setFiltreSituation(e.target.value)}
             className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="Tous">Tous</option>
@@ -123,42 +129,42 @@ function AutreInfrastructures() {
           </select>
         </div>
         <button
-          onClick={() => setShowAddModal(true)}
+          onClick={() => setAfficherModaleAjout(true)}
           className="bg-indigo-500 text-white p-2 rounded-lg flex items-center hover:bg-indigo-600"
         >
           <FaPlus className="mr-2" /> Ajouter une infrastructure
         </button>
       </div>
-      <InfrastructureList
-        infrastructures={filteredInfrastructures}
-        onEdit={handleEditInfrastructure}
-        onDelete={handleDeleteInfrastructure}
-        onShowDetails={handleShowDetails}
+      <ListeInfrastructures
+        infrastructures={infrastructuresFiltrees}
+        onEdit={gererEditionInfrastructure}
+        onDelete={gererSuppressionInfrastructure}
+        onShowDetails={gererAffichageDetails}
       />
-      {showAddModal && (
-        <InfrastructureForm onSubmit={handleAddInfrastructure} onClose={() => setShowAddModal(false)} />
+      {afficherModaleAjout && (
+        <FormulaireInfrastructure onSubmit={gererAjoutInfrastructure} onClose={() => setAfficherModaleAjout(false)} />
       )}
-      {editingInfrastructure && (
-        <InfrastructureForm
-          onSubmit={handleUpdateInfrastructure}
-          initialData={editingInfrastructure}
-          onClose={() => setEditingInfrastructure(null)}
+      {infrastructureEnEdition && (
+        <FormulaireInfrastructure
+          onSubmit={gererMiseAJourInfrastructure}
+          initialData={infrastructureEnEdition}
+          onClose={() => setInfrastructureEnEdition(null)}
         />
       )}
-      {showDetailsModal && (
-        <InfrastructureDetailsModal
-          infrastructure={showDetailsModal}
-          onClose={() => setShowDetailsModal(null)}
+      {afficherModaleDetails && (
+        <ModaleDetailsInfrastructure
+          infrastructure={afficherModaleDetails}
+          onClose={() => setAfficherModaleDetails(null)}
         />
       )}
-      <ConfirmationModal
-        isOpen={showConfirmModal}
-        onClose={() => setShowConfirmModal(false)}
-        onConfirm={confirmDeleteInfrastructure}
+      <ModaleConfirmation
+        estOuverte={afficherModaleConfirmation}
+        onClose={() => setAfficherModaleConfirmation(false)}
+        onConfirm={confirmerSuppressionInfrastructure}
         message="Voulez-vous vraiment supprimer cette infrastructure ?"
       />
     </div>
   );
 }
 
-export default AutreInfrastructures;
+export default AutresInfrastructures;

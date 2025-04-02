@@ -1,47 +1,57 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import { useAuth } from "./context/AuthContext";
-import { CampusProvider } from "./context/CampusContext";
-import { AuthProvider } from "./context/AuthContext";
+import { utiliserAuth } from "./context/AuthContext";
+import { FournisseurCampus } from "./context/CampusContext";
+import { FournisseurAuth } from "./context/AuthContext";
 import Batiments from "./pages/Batiments";
 import Salles from "./pages/Salles";
-import AutreInfrastructures from "./pages/AutreInfrastructures";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Spinner from "./components/Spinner";
+import AutresInfrastructures from "./pages/AutresInfrastructures";
+import Connexion from "./pages/Connexion";
+import TableauDeBord from "./pages/TableauDeBord";
+import IndicateurChargement from "./components/IndicateurChargement";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth();
+/**
+ * Composant pour protéger les routes nécessitant une authentification.
+ * @param {Object} props - Propriétés du composant.
+ * @param {ReactNode} props.children - Contenu à protéger.
+ * @returns {ReactNode} - Redirection ou contenu protégé.
+ */
+function RouteProtegee({ children }) {
+  const { utilisateur, chargement } = utiliserAuth();
 
-  if (loading) return <Spinner />;
-  if (!user) return <Navigate to="/login" />;
+  if (chargement) return <IndicateurChargement />;
+  if (!utilisateur) return <Navigate to="/connexion" />;
   return children;
 }
 
+/**
+ * Composant principal de l'application.
+ * Gère le routage et les fournisseurs de contexte.
+ */
 function App() {
   return (
     <Router>
-      <AuthProvider>
+      <FournisseurAuth>
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/connexion" element={<Connexion />} />
           <Route
             path="/"
             element={
-              <ProtectedRoute>
-                <CampusProvider>
-                  <Dashboard />
-                </CampusProvider>
-              </ProtectedRoute>
+              <RouteProtegee>
+                <FournisseurCampus>
+                  <TableauDeBord />
+                </FournisseurCampus>
+              </RouteProtegee>
             }
           >
             <Route path="batiments" element={<Batiments />} />
             <Route path="salles" element={<Salles />} />
-            <Route path="autre-infrastructures" element={<AutreInfrastructures />} />
+            <Route path="autres-infrastructures" element={<AutresInfrastructures />} />
             <Route index element={<Navigate to="batiments" />} /> {/* Redirection par défaut */}
           </Route>
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/connexion" />} />
         </Routes>
         <ToastContainer
           position="top-right"
@@ -55,7 +65,7 @@ function App() {
           pauseOnHover
           theme="light"
         />
-      </AuthProvider>
+      </FournisseurAuth>
     </Router>
   );
 }

@@ -1,97 +1,103 @@
 import React, { useState } from "react";
 import { FaPlus, FaUserCircle, FaSearch } from "react-icons/fa";
-import BuildingList from "../components/BatimentList";
-import BuildingForm from "../components/BatimentForm";
-import BuildingDetailsModal from "../components/BatimentDetailsModal";
-import ConfirmationModal from "../components/ConfirmationModal";
-import Spinner from "../components/Spinner";
-import { useCampus } from "../context/CampusContext";
+import ListeBatiments from "../components/ListeBatiments";
+import FormulaireBatiment from "../components/FormulaireBatiment";
+import ModaleDetailsBatiment from "../components/ModaleDetailsBatiment";
+import ModaleConfirmation from "../components/ModaleConfirmation";
+import IndicateurChargement from "../components/IndicateurChargement";
+import { utiliserCampus } from "../context/CampusContext";
 import { toast } from "react-toastify";
 
+/**
+ * Page de gestion des bâtiments.
+ * Permet d'ajouter, modifier, supprimer et voir les détails des bâtiments.
+ */
 function Batiments() {
-  const { buildings, rooms, addBuilding, updateBuilding, deleteBuilding, loading } = useCampus();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [situationFilter, setSituationFilter] = useState("Tous"); // Nouveau filtre
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [editingBuilding, setEditingBuilding] = useState(null);
-  const [showDetailsModal, setShowDetailsModal] = useState(null);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [buildingToDelete, setBuildingToDelete] = useState(null);
+  const { batiments, salles, ajouterBatiment, mettreAJourBatiment, supprimerBatiment, chargement } = utiliserCampus();
+  const [recherche, setRecherche] = useState("");
+  const [filtreSituation, setFiltreSituation] = useState("Tous"); // Filtre par situation
+  const [afficherModaleAjout, setAfficherModaleAjout] = useState(false);
+  const [batimentEnEdition, setBatimentEnEdition] = useState(null);
+  const [afficherModaleDetails, setAfficherModaleDetails] = useState(null);
+  const [afficherModaleConfirmation, setAfficherModaleConfirmation] = useState(false);
+  const [batimentASupprimer, setBatimentASupprimer] = useState(null);
 
-  const filteredBuildings = buildings
-    .filter((building) =>
-      building.nom.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .filter((building) =>
-      situationFilter === "Tous" ? true : building.situation === situationFilter
-    );
+  // Filtrer les bâtiments selon la recherche et la situation
+  const batimentsFiltres = batiments
+    .filter((batiment) => batiment.nom.toLowerCase().includes(recherche.toLowerCase()))
+    .filter((batiment) => filtreSituation === "Tous" ? true : batiment.situation === filtreSituation);
 
-  const handleAddBuilding = async (newBuilding) => {
+  /**
+   * Ajoute un nouveau bâtiment.
+   * @param {Object} nouveauBatiment - Données du nouveau bâtiment.
+   */
+  const gererAjoutBatiment = async (nouveauBatiment) => {
     try {
-      await addBuilding(newBuilding);
-      setShowAddModal(false);
-      toast.success("Bâtiment ajouté avec succès !", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-    } catch (error) {
-      toast.error("Erreur lors de l'ajout du bâtiment.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      await ajouterBatiment(nouveauBatiment);
+      setAfficherModaleAjout(false);
+      toast.success("Bâtiment ajouté avec succès !", { position: "top-right", autoClose: 3000 });
+    } catch (erreur) {
+      toast.error("Erreur lors de l'ajout du bâtiment.", { position: "top-right", autoClose: 3000 });
     }
   };
 
-  const handleEditBuilding = (building) => {
-    setEditingBuilding(building);
+  /**
+   * Prépare l'édition d'un bâtiment.
+   * @param {Object} batiment - Bâtiment à éditer.
+   */
+  const gererEditionBatiment = (batiment) => {
+    setBatimentEnEdition(batiment);
   };
 
-  const handleUpdateBuilding = async (updatedBuilding) => {
+  /**
+   * Met à jour un bâtiment existant.
+   * @param {Object} batimentMisAJour - Données mises à jour du bâtiment.
+   */
+  const gererMiseAJourBatiment = async (batimentMisAJour) => {
     try {
-      await updateBuilding({ ...updatedBuilding, id: editingBuilding.id });
-      setEditingBuilding(null);
-      toast.success("Bâtiment modifié avec succès !", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-    } catch (error) {
-      toast.error("Erreur lors de la modification du bâtiment.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      await mettreAJourBatiment({ ...batimentMisAJour, id: batimentEnEdition.id });
+      setBatimentEnEdition(null);
+      toast.success("Bâtiment modifié avec succès !", { position: "top-right", autoClose: 3000 });
+    } catch (erreur) {
+      toast.error("Erreur lors de la modification du bâtiment.", { position: "top-right", autoClose: 3000 });
     }
   };
 
-  const handleDeleteBuilding = (id) => {
-    setBuildingToDelete(id);
-    setShowConfirmModal(true);
+  /**
+   * Prépare la suppression d'un bâtiment.
+   * @param {string} id - ID du bâtiment à supprimer.
+   */
+  const gererSuppressionBatiment = (id) => {
+    setBatimentASupprimer(id);
+    setAfficherModaleConfirmation(true);
   };
 
-  const confirmDeleteBuilding = async () => {
-    if (buildingToDelete) {
+  /**
+   * Confirme la suppression d'un bâtiment.
+   */
+  const confirmerSuppressionBatiment = async () => {
+    if (batimentASupprimer) {
       try {
-        await deleteBuilding(buildingToDelete);
-        setBuildingToDelete(null);
-        setShowConfirmModal(false);
-        toast.success("Bâtiment supprimé avec succès !", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-      } catch (error) {
-        toast.error("Erreur lors de la suppression du bâtiment.", {
-          position: "top-right",
-          autoClose: 3000,
-        });
+        await supprimerBatiment(batimentASupprimer);
+        setBatimentASupprimer(null);
+        setAfficherModaleConfirmation(false);
+        toast.success("Bâtiment supprimé avec succès !", { position: "top-right", autoClose: 3000 });
+      } catch (erreur) {
+        toast.error("Erreur lors de la suppression du bâtiment.", { position: "top-right", autoClose: 3000 });
       }
     }
   };
 
-  const handleShowDetails = (building) => {
-    setShowDetailsModal(building);
+  /**
+   * Affiche les détails d'un bâtiment.
+   * @param {Object} batiment - Bâtiment dont on veut voir les détails.
+   */
+  const gererAffichageDetails = (batiment) => {
+    setAfficherModaleDetails(batiment);
   };
 
-  if (loading) {
-    return <Spinner />;
+  if (chargement) {
+    return <IndicateurChargement />;
   }
 
   return (
@@ -106,15 +112,15 @@ function Batiments() {
           <input
             type="text"
             placeholder="Rechercher un bâtiment..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            value={recherche}
+            onChange={(e) => setRecherche(e.target.value)}
             className="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
         <div className="w-1/3">
           <select
-            value={situationFilter}
-            onChange={(e) => setSituationFilter(e.target.value)}
+            value={filtreSituation}
+            onChange={(e) => setFiltreSituation(e.target.value)}
             className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="Tous">Tous</option>
@@ -123,39 +129,39 @@ function Batiments() {
           </select>
         </div>
         <button
-          onClick={() => setShowAddModal(true)}
+          onClick={() => setAfficherModaleAjout(true)}
           className="bg-indigo-500 text-white p-2 rounded-lg flex items-center hover:bg-indigo-600"
         >
           <FaPlus className="mr-2" /> Ajouter un bâtiment
         </button>
       </div>
-      <BuildingList
-        buildings={filteredBuildings}
-        onEdit={handleEditBuilding}
-        onDelete={handleDeleteBuilding}
-        onShowDetails={handleShowDetails}
+      <ListeBatiments
+        batiments={batimentsFiltres}
+        onEdit={gererEditionBatiment}
+        onDelete={gererSuppressionBatiment}
+        onShowDetails={gererAffichageDetails}
       />
-      {showAddModal && (
-        <BuildingForm onSubmit={handleAddBuilding} onClose={() => setShowAddModal(false)} />
+      {afficherModaleAjout && (
+        <FormulaireBatiment onSubmit={gererAjoutBatiment} onClose={() => setAfficherModaleAjout(false)} />
       )}
-      {editingBuilding && (
-        <BuildingForm
-          onSubmit={handleUpdateBuilding}
-          initialData={editingBuilding}
-          onClose={() => setEditingBuilding(null)}
+      {batimentEnEdition && (
+        <FormulaireBatiment
+          onSubmit={gererMiseAJourBatiment}
+          initialData={batimentEnEdition}
+          onClose={() => setBatimentEnEdition(null)}
         />
       )}
-      {showDetailsModal && (
-        <BuildingDetailsModal
-          building={showDetailsModal}
-          rooms={rooms}
-          onClose={() => setShowDetailsModal(null)}
+      {afficherModaleDetails && (
+        <ModaleDetailsBatiment
+          batiment={afficherModaleDetails}
+          salles={salles}
+          onClose={() => setAfficherModaleDetails(null)}
         />
       )}
-      <ConfirmationModal
-        isOpen={showConfirmModal}
-        onClose={() => setShowConfirmModal(false)}
-        onConfirm={confirmDeleteBuilding}
+      <ModaleConfirmation
+        estOuverte={afficherModaleConfirmation}
+        onClose={() => setAfficherModaleConfirmation(false)}
+        onConfirm={confirmerSuppressionBatiment}
         message="Voulez-vous vraiment supprimer ce bâtiment et toutes ses salles associées ?"
       />
     </div>

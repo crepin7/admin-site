@@ -1,35 +1,54 @@
 import React, { useState } from "react";
 
-function BatimentForm({ onSubmit, initialData = {}, onClose }) {
-  const [formData, setFormData] = useState({
+/**
+ * Formulaire pour ajouter ou modifier un bâtiment.
+ * @param {Object} props - Propriétés du composant.
+ * @param {Function} props.onSubmit - Fonction appelée lors de la soumission.
+ * @param {Object} props.initialData - Données initiales pour l'édition.
+ * @param {Function} props.onClose - Fonction pour fermer le formulaire.
+ */
+function FormulaireBatiment({ onSubmit, initialData = {}, onClose }) {
+  const [donneesFormulaire, setDonneesFormulaire] = useState({
     nom: initialData.nom || "",
     description: initialData.description || "",
     latitude: initialData.latitude || "",
     longitude: initialData.longitude || "",
     image: initialData.image || "",
-    type: initialData.type || "", // Nouveau champ
-    situation: initialData.situation || "Campus nord", // Default à "Campus nord"
+    type: initialData.type || "",
+    situation: initialData.situation || "Campus nord",
   });
 
-  const handleChange = (e) => {
+  /**
+   * Gère les changements dans les champs du formulaire.
+   * @param {Event} e - Événement de changement.
+   */
+  const gererChangement = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setDonneesFormulaire((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, image: reader.result }));
+  /**
+   * Gère l'upload d'une image.
+   * @param {Event} e - Événement de changement de fichier.
+   */
+  const gererUploadImage = (e) => {
+    const fichier = e.target.files[0];
+    if (fichier) {
+      const lecteur = new FileReader();
+      lecteur.onloadend = () => {
+        setDonneesFormulaire((prev) => ({ ...prev, image: lecteur.result }));
       };
-      reader.readAsDataURL(file);
+      lecteur.readAsDataURL(fichier);
     }
   };
 
-  const handleSubmit = (e) => {
+  /**
+   * Gère la soumission du formulaire.
+   * @param {Event} e - Événement de soumission.
+   */
+  const gererSoumission = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit(donneesFormulaire);
     onClose();
   };
 
@@ -39,14 +58,14 @@ function BatimentForm({ onSubmit, initialData = {}, onClose }) {
         <h2 className="text-xl font-bold text-indigo-500 mb-4">
           {initialData.id ? "Modifier le bâtiment" : "Ajouter un bâtiment"}
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={gererSoumission} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Nom</label>
             <input
               type="text"
               name="nom"
-              value={formData.nom}
-              onChange={handleChange}
+              value={donneesFormulaire.nom}
+              onChange={gererChangement}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
@@ -56,8 +75,8 @@ function BatimentForm({ onSubmit, initialData = {}, onClose }) {
             <input
               type="text"
               name="type"
-              value={formData.type}
-              onChange={handleChange}
+              value={donneesFormulaire.type}
+              onChange={gererChangement}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
@@ -66,8 +85,8 @@ function BatimentForm({ onSubmit, initialData = {}, onClose }) {
             <label className="block text-sm font-medium text-gray-700">Situation</label>
             <select
               name="situation"
-              value={formData.situation}
-              onChange={handleChange}
+              value={donneesFormulaire.situation}
+              onChange={gererChangement}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             >
@@ -79,8 +98,8 @@ function BatimentForm({ onSubmit, initialData = {}, onClose }) {
             <label className="block text-sm font-medium text-gray-700">Description</label>
             <textarea
               name="description"
-              value={formData.description}
-              onChange={handleChange}
+              value={donneesFormulaire.description}
+              onChange={gererChangement}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               rows="3"
             />
@@ -90,8 +109,8 @@ function BatimentForm({ onSubmit, initialData = {}, onClose }) {
             <input
               type="number"
               name="latitude"
-              value={formData.latitude}
-              onChange={handleChange}
+              value={donneesFormulaire.latitude}
+              onChange={gererChangement}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               step="any"
               required
@@ -102,8 +121,8 @@ function BatimentForm({ onSubmit, initialData = {}, onClose }) {
             <input
               type="number"
               name="longitude"
-              value={formData.longitude}
-              onChange={handleChange}
+              value={donneesFormulaire.longitude}
+              onChange={gererChangement}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               step="any"
               required
@@ -114,8 +133,8 @@ function BatimentForm({ onSubmit, initialData = {}, onClose }) {
             <input
               type="url"
               name="image"
-              value={formData.image.startsWith("data:") ? "" : formData.image}
-              onChange={handleChange}
+              value={donneesFormulaire.image.startsWith("data:") ? "" : donneesFormulaire.image}
+              onChange={gererChangement}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="URL de l'image"
             />
@@ -123,12 +142,12 @@ function BatimentForm({ onSubmit, initialData = {}, onClose }) {
             <input
               type="file"
               accept="image/*"
-              onChange={handleImageUpload}
+              onChange={gererUploadImage}
               className="w-full p-2"
             />
-            {formData.image && (
+            {donneesFormulaire.image && (
               <img
-                src={formData.image}
+                src={donneesFormulaire.image}
                 alt="Prévisualisation"
                 className="mt-2 w-32 h-32 object-cover rounded"
               />
@@ -155,4 +174,4 @@ function BatimentForm({ onSubmit, initialData = {}, onClose }) {
   );
 }
 
-export default BatimentForm;
+export default FormulaireBatiment;

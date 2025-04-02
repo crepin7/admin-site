@@ -1,7 +1,15 @@
 import React from "react";
 
-function ConfirmationModal({ isOpen, onClose, onConfirm, message }) {
-  if (!isOpen) return null;
+/**
+ * Modale de confirmation pour les suppressions.
+ * @param {Object} props - Propriétés du composant.
+ * @param {boolean} props.estOuverte - Indique si la modale est ouverte.
+ * @param {Function} props.onClose - Fonction pour fermer la modale.
+ * @param {Function} props.onConfirm - Fonction pour confirmer l'action.
+ * @param {string} props.message - Message à afficher dans la modale.
+ */
+function ModaleConfirmation({ estOuverte, onClose, onConfirm, message }) {
+  if (!estOuverte) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -27,4 +35,4 @@ function ConfirmationModal({ isOpen, onClose, onConfirm, message }) {
   );
 }
 
-export default ConfirmationModal;
+export default ModaleConfirmation;

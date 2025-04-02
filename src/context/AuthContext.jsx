@@ -1,27 +1,40 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import Spinner from "../components/Spinner"
+import IndicateurChargement from "../components/IndicateurChargement";
 
-const AuthContext = createContext();
+// Création du contexte d'authentification
+const ContexteAuth = createContext();
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+/**
+ * Fournisseur de contexte pour gérer l'état d'authentification de l'utilisateur.
+ * @param {Object} props - Propriétés du composant.
+ * @param {ReactNode} props.children - Composants enfants à encapsuler.
+ * @returns {ReactNode} - Fournisseur avec les valeurs du contexte.
+ */
+export function FournisseurAuth({ children }) {
+  const [utilisateur, setUtilisateur] = useState(null);
+  const [chargement, setChargement] = useState(true);
 
+  // Écoute les changements d'état d'authentification
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
+    const desinscription = onAuthStateChanged(auth, (utilisateurActuel) => {
+      setUtilisateur(utilisateurActuel);
+      setChargement(false);
     });
-    return () => unsubscribe();
+    // Nettoyage de l'écouteur lors du démontage
+    return () => desinscription();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
-      {!loading ? children : <Spinner />}
-    </AuthContext.Provider>
+    <ContexteAuth.Provider value={{ utilisateur, chargement }}>
+      {!chargement ? children : <IndicateurChargement />}
+    </ContexteAuth.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+/**
+ * Hook personnalisé pour accéder au contexte d'authentification.
+ * @returns {Object} - Les valeurs du contexte (utilisateur, chargement).
+ */
+export const utiliserAuth = () => useContext(ContexteAuth);
