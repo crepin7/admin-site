@@ -162,3 +162,4 @@ export function FournisseurCampus({ children }) {
   );
 }
 
+export const utiliserCampus = () => useContext(ContexteCampus);
