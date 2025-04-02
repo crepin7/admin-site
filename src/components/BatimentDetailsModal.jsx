@@ -7,11 +7,11 @@ function BatimentDetailsModal({ building, rooms, onClose }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-lg">
-        <h2 className="text-xl font-bold text-indigo-500 mb-4">{building.name}</h2>
+        <h2 className="text-xl font-bold text-indigo-500 mb-4">{building.nom}</h2>
         {building.image ? (
           <img
             src={building.image}
-            alt={building.name}
+            alt={building.nom}
             className="w-full h-80 object-cover rounded mb-4"
           />
         ) : (
@@ -40,9 +40,9 @@ function BatimentDetailsModal({ building, rooms, onClose }) {
                     className="flex items-center justify-between bg-white p-3 rounded-md shadow-sm hover:bg-gray-50 transition-colors"
                   >
                     <div>
-                      <span className="font-semibold text-indigo-600">{room.name}</span>
+                      <span className="font-semibold text-indigo-600">{room.nom}</span>
                       <span className="text-sm text-gray-600 ml-2">
-                        (Capacité: {room.capacity})
+                        (Capacité: {room.capacite})
                       </span>
                       <p className="text-sm text-gray-500">
                         {room.description || "Aucune description"}
@@ -51,7 +51,7 @@ function BatimentDetailsModal({ building, rooms, onClose }) {
                     {room.image && (
                       <img
                         src={room.image}
-                        alt={room.name}
+                        alt={room.nom}
                         className="w-12 h-12 object-cover rounded-full ml-2"
                       />
                     )}

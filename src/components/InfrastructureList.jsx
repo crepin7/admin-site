@@ -20,7 +20,7 @@ function InfrastructureList({ infrastructures, onEdit, onDelete, onShowDetails }
                 {infra.image ? (
                   <img
                     src={infra.image}
-                    alt={infra.name}
+                    alt={infra.nom}
                     className="w-full h-32 object-cover rounded-t-lg"
                   />
                 ) : (
@@ -29,7 +29,7 @@ function InfrastructureList({ infrastructures, onEdit, onDelete, onShowDetails }
                   </div>
                 )}
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-indigo-500">{infra.name}</h3>
+                  <h3 className="text-lg font-semibold text-indigo-500">{infra.nom}</h3>
                   <p className="text-gray-600 text-sm truncate">{infra.description}</p>
                   <p className="text-gray-500 text-sm">Type: {infra.type || "Non spécifié"}</p>
                   <p className="text-gray-500 text-sm">Situation: {infra.situation}</p>

@@ -21,7 +21,7 @@ function SalleList({ rooms, buildings, onEdit, onDelete }) {
                 {room.image ? (
                   <img
                     src={room.image}
-                    alt={room.name}
+                    alt={room.nom}
                     className="w-28 h-28 object-cover rounded-lg"
                   />
                 ) : (
@@ -30,13 +30,13 @@ function SalleList({ rooms, buildings, onEdit, onDelete }) {
                   </div>
                 )}
                 <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-indigo-600">{room.name}</h3>
+                  <h3 className="text-xl font-semibold text-indigo-600">{room.nom}</h3>
                   <p className="text-sm text-gray-700 mt-1">
                     <span className="font-medium">Bâtiment:</span>{" "}
-                    {building ? building.name : "Inconnu"}
+                    {building ? building.nom : "Inconnu"}
                   </p>
                   <p className="text-sm text-gray-700">
-                    <span className="font-medium">Capacité:</span> {room.capacity}
+                    <span className="font-medium">Capacité:</span> {room.capacite}
                   </p>
                   <p className="text-sm text-gray-700">
                     <span className="font-medium">Description:</span>{" "}

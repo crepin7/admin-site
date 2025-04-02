@@ -4,11 +4,11 @@ function InfrastructureDetailsModal({ infrastructure, onClose }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-lg">
-        <h2 className="text-xl font-bold text-indigo-500 mb-4">{infrastructure.name}</h2>
+        <h2 className="text-xl font-bold text-indigo-500 mb-4">{infrastructure.nom}</h2>
         {infrastructure.image ? (
           <img
             src={infrastructure.image}
-            alt={infrastructure.name}
+            alt={infrastructure.nom}
             className="w-full h-80 object-cover rounded mb-4"
           />
         ) : (

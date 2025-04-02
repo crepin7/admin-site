@@ -20,7 +20,7 @@ function BatimentList({ buildings, onEdit, onDelete, onShowDetails }) {
                 {building.image ? (
                   <img
                     src={building.image}
-                    alt={building.name}
+                    alt={building.nom}
                     className="w-full h-32 object-cover rounded-t-lg"
                   />
                 ) : (
@@ -29,7 +29,7 @@ function BatimentList({ buildings, onEdit, onDelete, onShowDetails }) {
                   </div>
                 )}
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-indigo-500">{building.name}</h3>
+                  <h3 className="text-lg font-semibold text-indigo-500">{building.nom}</h3>
                   <p className="text-gray-600 text-sm truncate">{building.description}</p>
                   <p className="text-gray-500 text-sm">Type: {building.type || "Non spécifié"}</p>
                   <p className="text-gray-500 text-sm">Situation: {building.situation}</p>

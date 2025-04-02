@@ -2,17 +2,17 @@ import React, { useState } from "react";
 
 function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
   const [formData, setFormData] = useState({
-    name: initialData.name || "",
-    capacity: initialData.capacity || "",
+    nom: initialData.nom || "",
+    capacite: initialData.capacite || "",
     description: initialData.description || "",
     image: initialData.image || "",
     buildingId: initialData.buildingId || "", // Gardé comme string
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { nom, value } = e.target;
     // Pas de conversion en entier pour buildingId, on garde la chaîne
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [nom]: value }));
   };
 
   const handleImageUpload = (e) => {
@@ -47,8 +47,8 @@ function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
             <label className="block text-sm font-medium text-gray-700">Nom</label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="nom"
+              value={formData.nom}
               onChange={handleChange}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
@@ -58,8 +58,8 @@ function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
             <label className="block text-sm font-medium text-gray-700">Capacité</label>
             <input
               type="number"
-              name="capacity"
-              value={formData.capacity}
+              name="capacite"
+              value={formData.capacite}
               onChange={handleChange}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required

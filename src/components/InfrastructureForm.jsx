@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 function InfrastructureForm({ onSubmit, initialData = {}, onClose }) {
   const [formData, setFormData] = useState({
-    name: initialData.name || "",
+    nom: initialData.nom || "",
     description: initialData.description || "",
     latitude: initialData.latitude || "",
     longitude: initialData.longitude || "",
@@ -12,8 +12,8 @@ function InfrastructureForm({ onSubmit, initialData = {}, onClose }) {
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { nom, value } = e.target;
+    setFormData((prev) => ({ ...prev, [nom]: value }));
   };
 
   const handleImageUpload = (e) => {
@@ -44,8 +44,8 @@ function InfrastructureForm({ onSubmit, initialData = {}, onClose }) {
             <label className="block text-sm font-medium text-gray-700">Nom</label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="nom"
+              value={formData.nom}
               onChange={handleChange}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
