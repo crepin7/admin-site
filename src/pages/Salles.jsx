@@ -16,7 +16,7 @@ function Salles() {
   const [roomToDelete, setRoomToDelete] = useState(null);
 
   const filteredRooms = rooms.filter((room) =>
-    room.name.toLowerCase().includes(searchQuery.toLowerCase())
+    room.nom.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleAddRoom = async (newRoom) => {

@@ -12,8 +12,8 @@ function InfrastructureForm({ onSubmit, initialData = {}, onClose }) {
   });
 
   const handleChange = (e) => {
-    const { nom, value } = e.target;
-    setFormData((prev) => ({ ...prev, [nom]: value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageUpload = (e) => {

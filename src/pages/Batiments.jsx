@@ -20,7 +20,7 @@ function Batiments() {
 
   const filteredBuildings = buildings
     .filter((building) =>
-      building.name.toLowerCase().includes(searchQuery.toLowerCase())
+      building.nom.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .filter((building) =>
       situationFilter === "Tous" ? true : building.situation === situationFilter
@@ -117,7 +117,7 @@ function Batiments() {
             onChange={(e) => setSituationFilter(e.target.value)}
             className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
-            <option value="Tous">Tous les campus</option>
+            <option value="Tous">Tous</option>
             <option value="Campus nord">Campus nord</option>
             <option value="Campus sud">Campus sud</option>
           </select>

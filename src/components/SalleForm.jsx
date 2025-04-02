@@ -10,9 +10,9 @@ function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
   });
 
   const handleChange = (e) => {
-    const { nom, value } = e.target;
+    const { name, value } = e.target;
     // Pas de conversion en entier pour buildingId, on garde la chaîne
-    setFormData((prev) => ({ ...prev, [nom]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageUpload = (e) => {
@@ -112,7 +112,7 @@ function SalleForm({ onSubmit, initialData = {}, buildings, onClose }) {
               <option value="">Sélectionner un bâtiment</option>
               {buildings.map((building) => (
                 <option key={building.id} value={building.id}>
-                  {building.name}
+                  {building.nom}
                 </option>
               ))}
             </select>

@@ -5,8 +5,8 @@ function BatimentList({ buildings, onEdit, onDelete, onShowDetails }) {
   return (
     <div className="mt-6">
       {buildings.length === 0 ? (
-        <div className="flex flex-col items-center justify-center text-gray-500">
-          <FaExclamationTriangle className="text-4xl mb-2" />
+        <div className="flex flex-col items-center justify-center text-gray-500 py-12">
+          <FaExclamationTriangle className="text-5xl mb-4 text-yellow-400" />
           <p>Aucun bâtiment trouvé</p>
         </div>
       ) : (

@@ -20,7 +20,7 @@ function AutreInfrastructures() {
 
   const filteredInfrastructures = infrastructures
     .filter((infra) =>
-      infra.name.toLowerCase().includes(searchQuery.toLowerCase())
+      infra.nom.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .filter((infra) =>
       situationFilter === "Tous" ? true : infra.situation === situationFilter
@@ -117,7 +117,7 @@ function AutreInfrastructures() {
             onChange={(e) => setSituationFilter(e.target.value)}
             className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
-            <option value="Tous">Tous les campus</option>
+            <option value="Tous">Tous</option>
             <option value="Campus nord">Campus nord</option>
             <option value="Campus sud">Campus sud</option>
           </select>
