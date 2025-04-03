@@ -160,7 +160,7 @@ function FormulaireBatiment({ onSubmit, initialData = {}, onClose }) {
                 }))
               }
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="URL d'une image (optionnel)"
+              placeholder="Coller l'URL des images"
             />
             <p className="text-sm text-gray-500 mt-1">Ou importer des images :</p>
             <label className="inline-flex items-center px-4 py-2 bg-indigo-500 text-white rounded-lg cursor-pointer hover:bg-indigo-600 transition-colors mt-1">
