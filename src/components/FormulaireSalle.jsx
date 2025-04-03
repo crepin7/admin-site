@@ -15,6 +15,8 @@ function FormulaireSalle({ onSubmit, initialData = {}, batiments, onClose }) {
     description: initialData.description || "",
     image: initialData.image || "",
     buildingId: initialData.buildingId || "",
+    latitude: initialData.latitude || "",
+    longitude: initialData.longitude || "",
   });
 
   /**
@@ -116,6 +118,30 @@ function FormulaireSalle({ onSubmit, initialData = {}, batiments, onClose }) {
             )}
           </div>
           <div>
+            <label className="block text-sm font-medium text-gray-700">Latitude</label>
+            <input
+              type="number"
+              name="latitude"
+              value={donneesFormulaire.latitude}
+              onChange={gererChangement}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              step="any"
+              placeholder="Optionnel"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Longitude</label>
+            <input
+              type="number"
+              name="longitude"
+              value={donneesFormulaire.longitude}
+              onChange={gererChangement}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              step="any"
+              placeholder="Optionnel"
+            />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-gray-700">Bâtiment</label>
             <select
               name="buildingId"
@@ -132,6 +158,7 @@ function FormulaireSalle({ onSubmit, initialData = {}, batiments, onClose }) {
               ))}
             </select>
           </div>
+          
           <div className="flex justify-end space-x-2">
             <button
               type="button"

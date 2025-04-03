@@ -50,6 +50,14 @@ function ListeSalles({ salles, batiments, onEdit, onDelete }) {
                     <span className="font-medium">Description:</span>{" "}
                     {salle.description || "Aucune"}
                   </p>
+                  <p className="text-sm text-gray-700">
+                    <span className="font-medium">Latitude:</span>{" "}
+                    {salle.latitude || "Non spécifiée"}
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <span className="font-medium">Longitude:</span>{" "}
+                    {salle.longitude || "Non spécifiée"}
+                  </p>
                 </div>
                 <div className="flex space-x-4">
                   <button
