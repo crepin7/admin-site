@@ -11,17 +11,24 @@ function ModaleDetailsInfrastructure({ infrastructure, onClose }) {
     <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm">
       <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-lg">
         <h2 className="text-xl font-bold text-indigo-500 mb-4">{infrastructure.nom}</h2>
-        {infrastructure.image ? (
-          <img
-            src={infrastructure.image}
-            alt={infrastructure.nom}
-            className="w-full h-80 object-cover rounded mb-4"
-          />
+
+        {infrastructure.images && infrastructure.images.length > 0 ? (
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            {infrastructure.images.map((img, index) => (
+              <img
+                key={index}
+                src={img}
+                alt={`${infrastructure.nom} ${index + 1}`}
+                className="w-full h-40 object-cover rounded"
+              />
+            ))}
+          </div>
         ) : (
           <div className="w-full h-40 bg-gray-200 rounded mb-4 flex items-center justify-center text-gray-500">
             Pas d'image
           </div>
         )}
+
         <div className="space-y-2">
           <p><strong>Type:</strong> {infrastructure.type || "Non spécifié"}</p>
           <p><strong>Situation:</strong> {infrastructure.situation || "Non spécifiée"}</p>

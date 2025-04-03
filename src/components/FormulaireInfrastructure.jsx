@@ -13,7 +13,7 @@ function FormulaireInfrastructure({ onSubmit, initialData = {}, onClose }) {
     description: initialData.description || "",
     latitude: initialData.latitude || "",
     longitude: initialData.longitude || "",
-    image: initialData.image || "",
+    images: initialData.images || [],
     type: initialData.type || "",
     situation: initialData.situation || "Campus nord",
   });
@@ -28,18 +28,38 @@ function FormulaireInfrastructure({ onSubmit, initialData = {}, onClose }) {
   };
 
   /**
-   * Gère l'upload d'une image.
+   * Gère l'upload de plusieurs images.
    * @param {Event} e - Événement de changement de fichier.
    */
   const gererUploadImage = (e) => {
-    const fichier = e.target.files[0];
-    if (fichier) {
-      const lecteur = new FileReader();
-      lecteur.onloadend = () => {
-        setDonneesFormulaire((prev) => ({ ...prev, image: lecteur.result }));
-      };
-      lecteur.readAsDataURL(fichier);
+    const fichiers = Array.from(e.target.files);
+    if (fichiers.length > 0) {
+      const nouvellesImages = [];
+      fichiers.forEach((fichier) => {
+        const lecteur = new FileReader();
+        lecteur.onloadend = () => {
+          nouvellesImages.push(lecteur.result);
+          if (nouvellesImages.length === fichiers.length) {
+            setDonneesFormulaire((prev) => ({
+              ...prev,
+              images: [...prev.images, ...nouvellesImages],
+            }));
+          }
+        };
+        lecteur.readAsDataURL(fichier);
+      });
     }
+  };
+
+  /**
+   * Supprime une image du tableau images.
+   * @param {number} index - Index de l'image à supprimer.
+   */
+  const supprimerImage = (index) => {
+    setDonneesFormulaire((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
   };
 
   /**
@@ -129,31 +149,49 @@ function FormulaireInfrastructure({ onSubmit, initialData = {}, onClose }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Image</label>
+            <label className="block text-sm font-medium text-gray-700">Images</label>
             <input
               type="url"
-              name="image"
-              value={donneesFormulaire.image.startsWith("data:") ? "" : donneesFormulaire.image}
-              onChange={gererChangement}
+              name="imageUrl"
+              onChange={(e) =>
+                setDonneesFormulaire((prev) => ({
+                  ...prev,
+                  images: [...prev.images, e.target.value].filter(Boolean),
+                }))
+              }
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="URL de l'image"
+              placeholder="URL d'une image (optionnel)"
             />
-            <p className="text-sm text-gray-500 mt-1">Ou importer une image :</p>
+            <p className="text-sm text-gray-500 mt-1">Ou importer des images :</p>
             <label className="inline-flex items-center px-4 py-2 bg-indigo-500 text-white rounded-lg cursor-pointer hover:bg-indigo-600 transition-colors mt-1">
-              <span>Choisir un fichier</span>
+              <span>Choisir des fichiers</span>
               <input
-              type="file"
-              accept="image/*"
-              onChange={gererUploadImage}
-              className="absolute opacity-0 w-0 h-0"
-            />
-            </label>
-            {donneesFormulaire.image && (
-              <img
-                src={donneesFormulaire.image}
-                alt="Prévisualisation"
-                className="mt-2 w-32 h-32 object-cover rounded"
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={gererUploadImage}
+                className="absolute opacity-0 w-0 h-0"
               />
+            </label>
+            {donneesFormulaire.images.length > 0 && (
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                {donneesFormulaire.images.map((img, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={img}
+                      alt={`Prévisualisation ${index + 1}`}
+                      className="w-24 h-24 object-cover rounded"
+                    />
+                    <button
+                      onClick={() => supprimerImage(index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                      title="Supprimer cette image"
+                    >
+                      <span className="text-xs">X</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
           <div className="flex justify-end space-x-2">

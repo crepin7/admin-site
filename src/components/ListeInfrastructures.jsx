@@ -25,9 +25,9 @@ function ListeInfrastructures({ infrastructures, onEdit, onDelete, onShowDetails
                 key={infra.id}
                 className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
               >
-                {infra.image ? (
+                {infra.images && infra.images.length > 0 ? (
                   <img
-                    src={infra.image}
+                    src={infra.images[0]}
                     alt={infra.nom}
                     className="w-full h-32 object-cover rounded-t-lg"
                   />

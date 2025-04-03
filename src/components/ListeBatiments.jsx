@@ -25,9 +25,9 @@ function ListeBatiments({ batiments, onEdit, onDelete, onShowDetails }) {
                 key={batiment.id}
                 className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
               >
-                {batiment.image ? (
+                {batiment.images && batiment.images.length > 0 ? (
                   <img
-                    src={batiment.image}
+                    src={batiment.images[0]} // Affiche la première image
                     alt={batiment.nom}
                     className="w-full h-32 object-cover rounded-t-lg"
                   />
@@ -73,5 +73,6 @@ function ListeBatiments({ batiments, onEdit, onDelete, onShowDetails }) {
     </div>
   );
 }
+
 
 export default ListeBatiments;

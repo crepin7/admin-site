@@ -26,9 +26,9 @@ function ListeSalles({ salles, batiments, onEdit, onDelete }) {
                 key={salle.id}
                 className="bg-white shadow-sm rounded-xl p-5 flex items-center space-x-6 hover:shadow-md transition-shadow duration-200 border border-gray-100"
               >
-                {salle.image ? (
+                {salle.images && salle.images.length > 0 ? (
                   <img
-                    src={salle.image}
+                    src={salle.images[0]}
                     alt={salle.nom}
                     className="w-28 h-28 object-cover rounded-lg"
                   />
