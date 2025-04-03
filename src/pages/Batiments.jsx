@@ -101,7 +101,7 @@ function Batiments() {
   }
 
   return (
-    <div className="relative">
+    <div className="relative z-0">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-indigo-500">Gestion des bâtiments</h1>
         <FaUserCircle className="text-indigo-500 text-3xl" title="Administrateur" />

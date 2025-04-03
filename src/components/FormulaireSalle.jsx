@@ -54,7 +54,7 @@ function FormulaireSalle({ onSubmit, initialData = {}, batiments, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm">
       <div className="bg-white p-6 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto shadow-lg">
         <h2 className="text-xl font-bold text-indigo-500 mb-4">
           {initialData.id ? "Modifier la salle" : "Ajouter une salle"}
@@ -93,31 +93,6 @@ function FormulaireSalle({ onSubmit, initialData = {}, batiments, onClose }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Image</label>
-            <input
-              type="url"
-              name="image"
-              value={donneesFormulaire.image.startsWith("data:") ? "" : donneesFormulaire.image}
-              onChange={gererChangement}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="URL de l'image"
-            />
-            <p className="text-sm text-gray-500 mt-1">Ou importer une image :</p>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={gererUploadImage}
-              className="w-full p-2"
-            />
-            {donneesFormulaire.image && (
-              <img
-                src={donneesFormulaire.image}
-                alt="Prévisualisation"
-                className="mt-2 w-24 h-24 object-cover rounded"
-              />
-            )}
-          </div>
-          <div>
             <label className="block text-sm font-medium text-gray-700">Latitude</label>
             <input
               type="number"
@@ -141,6 +116,35 @@ function FormulaireSalle({ onSubmit, initialData = {}, batiments, onClose }) {
               placeholder="Optionnel"
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Image</label>
+            <input
+              type="url"
+              name="image"
+              value={donneesFormulaire.image.startsWith("data:") ? "" : donneesFormulaire.image}
+              onChange={gererChangement}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="URL de l'image"
+            />
+            <p className="text-sm text-gray-500 mt-1">Ou importer une image :</p>
+            <label className="inline-flex items-center px-4 py-2 bg-indigo-500 text-white rounded-lg cursor-pointer hover:bg-indigo-600 transition-colors mt-1">
+              <span>Choisir un fichier</span>
+              <input
+              type="file"
+              accept="image/*"
+              onChange={gererUploadImage}
+              className="absolute opacity-0 w-0 h-0"
+            />
+            </label>
+            {donneesFormulaire.image && (
+              <img
+                src={donneesFormulaire.image}
+                alt="Prévisualisation"
+                className="mt-2 w-24 h-24 object-cover rounded"
+              />
+            )}
+          </div>
+          
           <div>
             <label className="block text-sm font-medium text-gray-700">Bâtiment</label>
             <select

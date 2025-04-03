@@ -53,7 +53,7 @@ function FormulaireInfrastructure({ onSubmit, initialData = {}, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm">
       <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-lg">
         <h2 className="text-xl font-bold text-indigo-500 mb-4">
           {initialData.id ? "Modifier l'infrastructure" : "Ajouter une infrastructure"}
@@ -139,12 +139,15 @@ function FormulaireInfrastructure({ onSubmit, initialData = {}, onClose }) {
               placeholder="URL de l'image"
             />
             <p className="text-sm text-gray-500 mt-1">Ou importer une image :</p>
-            <input
+            <label className="inline-flex items-center px-4 py-2 bg-indigo-500 text-white rounded-lg cursor-pointer hover:bg-indigo-600 transition-colors mt-1">
+              <span>Choisir un fichier</span>
+              <input
               type="file"
               accept="image/*"
               onChange={gererUploadImage}
-              className="w-full p-2"
+              className="absolute opacity-0 w-0 h-0"
             />
+            </label>
             {donneesFormulaire.image && (
               <img
                 src={donneesFormulaire.image}

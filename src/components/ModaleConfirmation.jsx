@@ -12,7 +12,7 @@ function ModaleConfirmation({ estOuverte, onClose, onConfirm, message }) {
   if (!estOuverte) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Confirmation</h3>
         <p className="text-gray-600 mb-6">{message}</p>

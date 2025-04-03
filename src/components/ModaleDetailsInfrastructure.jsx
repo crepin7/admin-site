@@ -8,7 +8,7 @@ import React from "react";
  */
 function ModaleDetailsInfrastructure({ infrastructure, onClose }) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm">
       <div className="bg-white p-6 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-lg">
         <h2 className="text-xl font-bold text-indigo-500 mb-4">{infrastructure.nom}</h2>
         {infrastructure.image ? (
