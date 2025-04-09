@@ -14,7 +14,7 @@ function FormulaireBatiment({ onSubmit, initialData = {}, onClose }) {
     latitude: initialData.latitude || "",
     longitude: initialData.longitude || "",
     images: initialData.images || [],
-    type: initialData.type || "",
+    type: initialData.type || "administratif", // Valeur par défaut
     situation: initialData.situation || "Campus nord",
   });
 
@@ -92,14 +92,16 @@ function FormulaireBatiment({ onSubmit, initialData = {}, onClose }) {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Type</label>
-            <input
-              type="text"
+            <select
               name="type"
               value={donneesFormulaire.type}
               onChange={gererChangement}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
-            />
+            >
+              <option value="administratif">Administratif</option>
+              <option value="enseignement">Enseignement</option>
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Situation</label>
