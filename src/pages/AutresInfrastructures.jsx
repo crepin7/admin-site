@@ -10,17 +10,19 @@ import { toast } from "react-toastify";
 
 /**
  * Page de gestion des autres infrastructures.
- * Permet d'ajouter, modifier, supprimer et voir les détails des infrastructures.
+ * Permet d'ajouter, modifier, supprimer et voir les détails des infrastructures avec pagination.
  */
 function AutresInfrastructures() {
   const { infrastructures, ajouterInfrastructure, mettreAJourInfrastructure, supprimerInfrastructure, chargement } = utiliserCampus();
   const [recherche, setRecherche] = useState("");
-  const [filtreSituation, setFiltreSituation] = useState("Tous"); // Filtre par situation
+  const [filtreSituation, setFiltreSituation] = useState("Tous");
   const [afficherModaleAjout, setAfficherModaleAjout] = useState(false);
   const [infrastructureEnEdition, setInfrastructureEnEdition] = useState(null);
   const [afficherModaleDetails, setAfficherModaleDetails] = useState(null);
   const [afficherModaleConfirmation, setAfficherModaleConfirmation] = useState(false);
   const [infrastructureASupprimer, setInfrastructureASupprimer] = useState(null);
+  const [pageActuelle, setPageActuelle] = useState(1);
+  const elementsParPage = 6;
 
   // Filtrer les infrastructures selon la recherche et la situation
   const infrastructuresFiltrees = infrastructures
@@ -82,6 +84,11 @@ function AutresInfrastructures() {
         setInfrastructureASupprimer(null);
         setAfficherModaleConfirmation(false);
         toast.success("Infrastructure supprimée avec succès !", { position: "top-right", autoClose: 3000 });
+        // Revenir à la page précédente si la page actuelle devient vide
+        const totalPages = Math.ceil((infrastructuresFiltrees.length - 1) / elementsParPage);
+        if (pageActuelle > totalPages && totalPages > 0) {
+          setPageActuelle(totalPages);
+        }
       } catch (erreur) {
         toast.error("Erreur lors de la suppression de l'infrastructure.", { position: "top-right", autoClose: 3000 });
       }
@@ -140,6 +147,9 @@ function AutresInfrastructures() {
         onEdit={gererEditionInfrastructure}
         onDelete={gererSuppressionInfrastructure}
         onShowDetails={gererAffichageDetails}
+        pageActuelle={pageActuelle}
+        setPageActuelle={setPageActuelle}
+        elementsParPage={elementsParPage}
       />
       {afficherModaleAjout && (
         <FormulaireInfrastructure onSubmit={gererAjoutInfrastructure} onClose={() => setAfficherModaleAjout(false)} />

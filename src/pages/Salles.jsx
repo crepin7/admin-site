@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 
 /**
  * Page de gestion des salles.
- * Permet d'ajouter, modifier, supprimer, voir les détails des salles et trier par bâtiment.
+ * Permet d'ajouter, modifier, supprimer, voir les détails des salles et trier par bâtiment avec pagination.
  */
 function Salles() {
   const { batiments, salles, ajouterSalle, mettreAJourSalle, supprimerSalle, chargement } = utiliserCampus();
@@ -21,6 +21,8 @@ function Salles() {
   const [salleASupprimer, setSalleASupprimer] = useState(null);
   const [salleEnDetails, setSalleEnDetails] = useState(null);
   const [batimentFiltre, setBatimentFiltre] = useState("tous");
+  const [pageActuelle, setPageActuelle] = useState(1);
+  const elementsParPage = 6;
 
   // Filtrer les salles selon la recherche et le bâtiment sélectionné
   const sallesFiltrees = salles.filter((salle) => {
@@ -92,6 +94,11 @@ function Salles() {
         setSalleASupprimer(null);
         setAfficherModaleConfirmation(false);
         toast.success("Salle supprimée avec succès !", { position: "top-right", autoClose: 3000 });
+        // Revenir à la page précédente si la page actuelle devient vide
+        const totalPages = Math.ceil((sallesFiltrees.length - 1) / elementsParPage);
+        if (pageActuelle > totalPages && totalPages > 0) {
+          setPageActuelle(totalPages);
+        }
       } catch (erreur) {
         toast.error("Erreur lors de la suppression de la salle.", { position: "top-right", autoClose: 3000 });
       }
@@ -146,6 +153,9 @@ function Salles() {
         onEdit={gererEditionSalle}
         onDelete={gererSuppressionSalle}
         onDetails={gererDetailsSalle}
+        pageActuelle={pageActuelle}
+        setPageActuelle={setPageActuelle}
+        elementsParPage={elementsParPage}
       />
       {afficherModaleAjout && (
         <FormulaireSalle

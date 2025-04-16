@@ -10,17 +10,19 @@ import { toast } from "react-toastify";
 
 /**
  * Page de gestion des bâtiments.
- * Permet d'ajouter, modifier, supprimer et voir les détails des bâtiments.
+ * Permet d'ajouter, modifier, supprimer et voir les détails des bâtiments avec pagination.
  */
 function Batiments() {
   const { batiments, salles, ajouterBatiment, mettreAJourBatiment, supprimerBatiment, chargement } = utiliserCampus();
   const [recherche, setRecherche] = useState("");
-  const [filtreSituation, setFiltreSituation] = useState("Tous"); // Filtre par situation
+  const [filtreSituation, setFiltreSituation] = useState("Tous");
   const [afficherModaleAjout, setAfficherModaleAjout] = useState(false);
   const [batimentEnEdition, setBatimentEnEdition] = useState(null);
   const [afficherModaleDetails, setAfficherModaleDetails] = useState(null);
   const [afficherModaleConfirmation, setAfficherModaleConfirmation] = useState(false);
   const [batimentASupprimer, setBatimentASupprimer] = useState(null);
+  const [pageActuelle, setPageActuelle] = useState(1);
+  const elementsParPage = 6;
 
   // Filtrer les bâtiments selon la recherche et la situation
   const batimentsFiltres = batiments
@@ -82,6 +84,11 @@ function Batiments() {
         setBatimentASupprimer(null);
         setAfficherModaleConfirmation(false);
         toast.success("Bâtiment supprimé avec succès !", { position: "top-right", autoClose: 3000 });
+        // Revenir à la page précédente si la page actuelle devient vide
+        const totalPages = Math.ceil((batimentsFiltres.length - 1) / elementsParPage);
+        if (pageActuelle > totalPages && totalPages > 0) {
+          setPageActuelle(totalPages);
+        }
       } catch (erreur) {
         toast.error("Erreur lors de la suppression du bâtiment.", { position: "top-right", autoClose: 3000 });
       }
@@ -140,6 +147,9 @@ function Batiments() {
         onEdit={gererEditionBatiment}
         onDelete={gererSuppressionBatiment}
         onShowDetails={gererAffichageDetails}
+        pageActuelle={pageActuelle}
+        setPageActuelle={setPageActuelle}
+        elementsParPage={elementsParPage}
       />
       {afficherModaleAjout && (
         <FormulaireBatiment onSubmit={gererAjoutBatiment} onClose={() => setAfficherModaleAjout(false)} />
