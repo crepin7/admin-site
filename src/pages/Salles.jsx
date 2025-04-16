@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 
 /**
  * Page de gestion des salles.
- * Permet d'ajouter, modifier, supprimer et voir les détails des salles.
+ * Permet d'ajouter, modifier, supprimer, voir les détails des salles et trier par bâtiment.
  */
 function Salles() {
   const { batiments, salles, ajouterSalle, mettreAJourSalle, supprimerSalle, chargement } = utiliserCampus();
@@ -20,11 +20,14 @@ function Salles() {
   const [afficherModaleConfirmation, setAfficherModaleConfirmation] = useState(false);
   const [salleASupprimer, setSalleASupprimer] = useState(null);
   const [salleEnDetails, setSalleEnDetails] = useState(null);
+  const [batimentFiltre, setBatimentFiltre] = useState("tous");
 
-  // Filtrer les salles selon la recherche
-  const sallesFiltrees = salles.filter((salle) =>
-    salle.nom.toLowerCase().includes(recherche.toLowerCase())
-  );
+  // Filtrer les salles selon la recherche et le bâtiment sélectionné
+  const sallesFiltrees = salles.filter((salle) => {
+    const correspondRecherche = salle.nom.toLowerCase().includes(recherche.toLowerCase());
+    const correspondBatiment = batimentFiltre === "tous" || salle.buildingId === batimentFiltre;
+    return correspondRecherche && correspondBatiment;
+  });
 
   /**
    * Ajoute une nouvelle salle.
@@ -105,8 +108,8 @@ function Salles() {
         <h1 className="text-3xl font-bold text-indigo-500">Gestion des salles</h1>
         <FaUserCircle className="text-indigo-500 text-3xl" title="Administrateur" />
       </div>
-      <div className="flex justify-between items-center mb-6">
-        <div className="relative w-1/2">
+      <div className="flex justify-between items-center mb-6 space-x-4">
+        <div className="relative w-1/3">
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             type="text"
@@ -115,6 +118,20 @@ function Salles() {
             onChange={(e) => setRecherche(e.target.value)}
             className="w-full pl-10 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
+        </div>
+        <div className="w-1/3">
+          <select
+            value={batimentFiltre}
+            onChange={(e) => setBatimentFiltre(e.target.value)}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="tous">Tous les bâtiments</option>
+            {batiments.map((batiment) => (
+              <option key={batiment.id} value={batiment.id}>
+                {batiment.nom}
+              </option>
+            ))}
+          </select>
         </div>
         <button
           onClick={() => setAfficherModaleAjout(true)}
