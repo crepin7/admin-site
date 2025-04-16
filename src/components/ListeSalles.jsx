@@ -1,15 +1,16 @@
 import React from "react";
-import { FaEdit, FaTrash, FaExclamationTriangle } from "react-icons/fa";
+import { FaEdit, FaTrash, FaExclamationTriangle, FaInfoCircle } from "react-icons/fa";
 
 /**
- * Liste des salles avec options d'édition et de suppression.
+ * Liste des salles avec options de détails, d'édition et de suppression.
  * @param {Object} props - Propriétés du composant.
  * @param {Array} props.salles - Liste des salles à afficher.
  * @param {Array} props.batiments - Liste des bâtiments pour associer les salles.
  * @param {Function} props.onEdit - Fonction appelée pour éditer une salle.
  * @param {Function} props.onDelete - Fonction appelée pour supprimer une salle.
+ * @param {Function} props.onDetails - Fonction appelée pour afficher les détails d'une salle.
  */
-function ListeSalles({ salles, batiments, onEdit, onDelete }) {
+function ListeSalles({ salles, batiments, onEdit, onDelete, onDetails }) {
   return (
     <div className="mt-6">
       {salles.length === 0 ? (
@@ -60,6 +61,13 @@ function ListeSalles({ salles, batiments, onEdit, onDelete }) {
                   </p>
                 </div>
                 <div className="flex space-x-4">
+                  <button
+                    onClick={() => onDetails(salle)}
+                    className="text-indigo-500 hover:text-indigo-700 p-2 rounded-full hover:bg-indigo-100 transition-colors duration-200"
+                    title="Détails"
+                  >
+                    <FaInfoCircle className="text-lg" />
+                  </button>
                   <button
                     onClick={() => onEdit(salle)}
                     className="text-indigo-500 hover:text-indigo-700 p-2 rounded-full hover:bg-indigo-100 transition-colors duration-200"

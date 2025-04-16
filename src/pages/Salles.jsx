@@ -3,13 +3,14 @@ import { FaPlus, FaUserCircle, FaSearch } from "react-icons/fa";
 import ListeSalles from "../components/ListeSalles";
 import FormulaireSalle from "../components/FormulaireSalle";
 import ModaleConfirmation from "../components/ModaleConfirmation";
+import ModaleDetailsSalle from "../components/ModaleDetailsSalle";
 import IndicateurChargement from "../components/IndicateurChargement";
 import { utiliserCampus } from "../context/CampusContext";
 import { toast } from "react-toastify";
 
 /**
  * Page de gestion des salles.
- * Permet d'ajouter, modifier et supprimer des salles.
+ * Permet d'ajouter, modifier, supprimer et voir les détails des salles.
  */
 function Salles() {
   const { batiments, salles, ajouterSalle, mettreAJourSalle, supprimerSalle, chargement } = utiliserCampus();
@@ -18,6 +19,7 @@ function Salles() {
   const [salleEnEdition, setSalleEnEdition] = useState(null);
   const [afficherModaleConfirmation, setAfficherModaleConfirmation] = useState(false);
   const [salleASupprimer, setSalleASupprimer] = useState(null);
+  const [salleEnDetails, setSalleEnDetails] = useState(null);
 
   // Filtrer les salles selon la recherche
   const sallesFiltrees = salles.filter((salle) =>
@@ -44,6 +46,14 @@ function Salles() {
    */
   const gererEditionSalle = (salle) => {
     setSalleEnEdition(salle);
+  };
+
+  /**
+   * Affiche les détails d'une salle.
+   * @param {Object} salle - Salle à afficher.
+   */
+  const gererDetailsSalle = (salle) => {
+    setSalleEnDetails(salle);
   };
 
   /**
@@ -118,6 +128,7 @@ function Salles() {
         batiments={batiments}
         onEdit={gererEditionSalle}
         onDelete={gererSuppressionSalle}
+        onDetails={gererDetailsSalle}
       />
       {afficherModaleAjout && (
         <FormulaireSalle
@@ -132,6 +143,13 @@ function Salles() {
           initialData={salleEnEdition}
           batiments={batiments}
           onClose={() => setSalleEnEdition(null)}
+        />
+      )}
+      {salleEnDetails && (
+        <ModaleDetailsSalle
+          salle={salleEnDetails}
+          batiments={batiments}
+          onClose={() => setSalleEnDetails(null)}
         />
       )}
       <ModaleConfirmation
