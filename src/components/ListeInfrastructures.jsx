@@ -1,5 +1,5 @@
 import React from "react";
-import { FaEdit, FaTrash, FaInfoCircle, FaExclamationTriangle, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaEdit, FaTrash, FaInfoCircle, FaExclamationTriangle, FaChevronLeft, FaChevronRight, FaServer, FaMapMarkerAlt } from "react-icons/fa";
 
 /**
  * Liste des infrastructures avec options d'édition, suppression, détails et pagination.
@@ -13,118 +13,94 @@ import { FaEdit, FaTrash, FaInfoCircle, FaExclamationTriangle, FaChevronLeft, Fa
  * @param {number} props.elementsParPage - Nombre d'éléments par page.
  */
 function ListeInfrastructures({ infrastructures, onEdit, onDelete, onShowDetails, pageActuelle, setPageActuelle, elementsParPage }) {
-  // Calculer les infrastructures à afficher pour la page actuelle
   const indexDebut = (pageActuelle - 1) * elementsParPage;
   const indexFin = indexDebut + elementsParPage;
   const infrastructuresPaginees = infrastructures.slice(indexDebut, indexFin);
   const totalPages = Math.ceil(infrastructures.length / elementsParPage);
 
-  // Changer de page
   const changerPage = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setPageActuelle(page);
+    if (page >= 1 && page <= totalPages) setPageActuelle(page);
+  };
+
+  const getCampusColor = (situation) => {
+    switch (situation) {
+      case "Campus nord":
+        return "badge-info";
+      case "Campus sud":
+        return "badge-warning";
+      default:
+        return "badge-success";
     }
   };
 
   return (
-    <div className="mt-6">
+    <div className="space-y-6">
       {infrastructures.length === 0 ? (
-        <div className="flex flex-col items-center justify-center text-gray-500 py-12">
-          <FaExclamationTriangle className="text-5xl mb-4 text-yellow-400" />
-          <p>Aucune infrastructure trouvée</p>
+        <div className="card p-12 text-center animate-fade-in">
+          <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <FaExclamationTriangle className="text-white text-3xl" />
+          </div>
+          <h3 className="text-xl font-semibold text-slate-700 mb-2">Aucune infrastructure trouvée</h3>
+          <p className="text-slate-500">Ajoutez votre première infrastructure</p>
         </div>
       ) : (
         <>
-          <div className="max-h-[calc(100vh-175px)] overflow-y-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {infrastructuresPaginees.map((infra) => (
-                <div
-                  key={infra.id}
-                  className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
-                >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {infrastructuresPaginees.map((infra, index) => (
+              <div key={infra.id} className="card hover-lift animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                <div className="relative h-32 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 rounded-t-xl">
                   {infra.images && infra.images.length > 0 ? (
-                    <img
-                      src={infra.images[0]}
-                      alt={infra.nom}
-                      className="w-full h-32 object-cover rounded-t-lg"
-                    />
+                    <img src={infra.images[0]} alt={infra.nom} className="w-full h-full object-cover rounded-t-xl" />
                   ) : (
-                    <div className="w-full h-32 bg-gray-200 rounded-t-lg flex items-center justify-center text-gray-500">
-                      Pas d'image
-                    </div>
+                    <FaServer className="text-4xl text-slate-300" />
                   )}
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-indigo-500">{infra.nom}</h3>
-                    <p className="text-gray-600 text-sm truncate">{infra.description}</p>
-                    <p className="text-gray-500 text-sm">Type: {infra.type || "Non spécifié"}</p>
-                    <p className="text-gray-500 text-sm">Situation: {infra.situation}</p>
-                    <div className="flex justify-end space-x-3 mt-3">
-                      <button
-                        onClick={() => onShowDetails(infra)}
-                        className="text-indigo-500 hover:text-indigo-700"
-                        title="Détails"
-                      >
-                        <FaInfoCircle />
-                      </button>
-                      <button
-                        onClick={() => onEdit(infra)}
-                        className="text-indigo-500 hover:text-indigo-700"
-                        title="Modifier"
-                      >
+                  <div className="absolute top-3 right-3">
+                    <span className={`badge ${getCampusColor(infra.situation)}`}>{infra.situation}</span>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-lg font-bold text-slate-800 mb-1 line-clamp-1 flex items-center gap-2">
+                    <FaServer className="text-blue-400" /> {infra.nom}
+                  </h3>
+                  <div className="flex items-center text-slate-500 text-xs mb-2">
+                    <FaMapMarkerAlt className="mr-1" /> {infra.situation}
+                  </div>
+                  <p className="text-slate-600 text-sm mb-2 line-clamp-2">{infra.description || "Aucune description"}</p>
+                  <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                    <button onClick={() => onShowDetails(infra)} className="btn-secondary text-xs px-3 py-2">
+                      <FaInfoCircle className="mr-1" /> Détails
+                    </button>
+                    <div className="flex items-center space-x-2">
+                      <button onClick={() => onEdit(infra)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200" title="Modifier">
                         <FaEdit />
                       </button>
-                      <button
-                        onClick={() => onDelete(infra.id)}
-                        className="text-red-500 hover:text-red-700"
-                        title="Supprimer"
-                      >
+                      <button onClick={() => onDelete(infra.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200" title="Supprimer">
                         <FaTrash />
                       </button>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
           {totalPages > 1 && (
-            <div className="flex justify-center items-center mt-6 space-x-2">
-              <button
-                onClick={() => changerPage(pageActuelle - 1)}
-                disabled={pageActuelle === 1}
-                className={`p-2 rounded-lg ${
-                  pageActuelle === 1
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-indigo-500 text-white hover:bg-indigo-600"
-                }`}
-              >
+            <div className="flex justify-center items-center space-x-2 mt-8">
+              <button onClick={() => changerPage(pageActuelle - 1)} disabled={pageActuelle === 1} className={`p-3 rounded-xl transition-all duration-200 ${pageActuelle === 1 ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-white text-slate-600 hover:bg-slate-50 hover-lift"}`}>
                 <FaChevronLeft />
               </button>
               {[...Array(totalPages).keys()].map((index) => (
-                <button
-                  key={index + 1}
-                  onClick={() => changerPage(index + 1)}
-                  className={`px-4 py-2 rounded-lg ${
-                    pageActuelle === index + 1
-                      ? "bg-indigo-500 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  }`}
-                >
+                <button key={index + 1} onClick={() => changerPage(index + 1)} className={`px-4 py-3 rounded-xl transition-all duration-200 ${pageActuelle === index + 1 ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg" : "bg-white text-slate-600 hover:bg-slate-50 hover-lift"}`}>
                   {index + 1}
                 </button>
               ))}
-              <button
-                onClick={() => changerPage(pageActuelle + 1)}
-                disabled={pageActuelle === totalPages}
-                className={`p-2 rounded-lg ${
-                  pageActuelle === totalPages
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-indigo-500 text-white hover:bg-indigo-600"
-                }`}
-              >
+              <button onClick={() => changerPage(pageActuelle + 1)} disabled={pageActuelle === totalPages} className={`p-3 rounded-xl transition-all duration-200 ${pageActuelle === totalPages ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-white text-slate-600 hover:bg-slate-50 hover-lift"}`}>
                 <FaChevronRight />
               </button>
             </div>
           )}
+          <div className="text-center text-slate-500 text-sm">
+            Affichage de {indexDebut + 1} à {Math.min(indexFin, infrastructures.length)} sur {infrastructures.length} infrastructures
+          </div>
         </>
       )}
     </div>

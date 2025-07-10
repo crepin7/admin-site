@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaPlus, FaUserCircle, FaSearch } from "react-icons/fa";
+import { FaPlus, FaUserCircle, FaSearch, FaFilter, FaChartBar, FaDoorOpen, FaBuilding } from "react-icons/fa";
 import ListeSalles from "../components/ListeSalles";
 import FormulaireSalle from "../components/FormulaireSalle";
 import ModaleConfirmation from "../components/ModaleConfirmation";
@@ -30,6 +30,12 @@ function Salles() {
     const correspondBatiment = batimentFiltre === "tous" || salle.buildingId === batimentFiltre;
     return correspondRecherche && correspondBatiment;
   });
+
+  // Statistiques
+  const totalSalles = salles.length;
+  const sallesOccupees = salles.filter(s => s.statut === "Occupée").length;
+  const sallesDisponibles = salles.filter(s => s.statut === "Disponible").length;
+  const sallesMaintenance = salles.filter(s => s.statut === "Maintenance").length;
 
   /**
    * Ajoute une nouvelle salle.
@@ -110,43 +116,78 @@ function Salles() {
   }
 
   return (
-    <div className="relative">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-indigo-500">Gestion des salles</h1>
-        <FaUserCircle className="text-indigo-500 text-3xl" title="Administrateur" />
-      </div>
-      <div className="flex justify-between items-center mb-6 space-x-4">
-        <div className="relative w-1/3">
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Rechercher une salle..."
-            value={recherche}
-            onChange={(e) => setRecherche(e.target.value)}
-            className="w-full pl-10 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
+    <div className="space-y-6 animate-fade-in">
+      {/* En-tête avec statistiques */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div>
+          <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-800 to-blue-600 bg-clip-text text-transparent">
+            Gestion des Salles
+          </h1>
+          <p className="text-slate-600 mt-2">Administrez les salles de cours du campus</p>
         </div>
-        <div className="w-1/3">
-          <select
-            value={batimentFiltre}
-            onChange={(e) => setBatimentFiltre(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        
+        <div className="flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-2 text-slate-600">
+            <FaUserCircle className="text-2xl text-blue-500" />
+            <span className="font-medium">Administrateur</span>
+          </div>
+          <button
+            onClick={() => setAfficherModaleAjout(true)}
+            className="btn-primary"
           >
-            <option value="tous">Tous les bâtiments</option>
-            {batiments.map((batiment) => (
-              <option key={batiment.id} value={batiment.id}>
-                {batiment.nom}
-              </option>
-            ))}
-          </select>
+            <FaPlus className="mr-2" /> Nouvelle Salle
+          </button>
         </div>
-        <button
-          onClick={() => setAfficherModaleAjout(true)}
-          className="bg-indigo-500 text-white p-2 rounded-lg flex items-center hover:bg-indigo-600"
-        >
-          <FaPlus className="mr-2" /> Ajouter une salle
-        </button>
       </div>
+
+      {/* Cartes de statistiques */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="card p-6 hover-lift">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-slate-600 text-sm font-medium">Total Salles</p>
+              <p className="text-3xl font-bold text-slate-800">{totalSalles}</p>
+            </div>
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+              <FaDoorOpen className="text-white text-xl" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Barre de recherche et filtres */}
+      <div className="card p-6">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex-1 relative">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Rechercher une salle..."
+              value={recherche}
+              onChange={(e) => setRecherche(e.target.value)}
+              className="input-modern pl-10"
+            />
+          </div>
+          
+          <div className="relative">
+            <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <select
+              value={batimentFiltre}
+              onChange={(e) => setBatimentFiltre(e.target.value)}
+              className="input-modern pl-10 appearance-none cursor-pointer"
+            >
+              <option value="tous">Tous les bâtiments</option>
+              {batiments.map((batiment) => (
+                <option key={batiment.id} value={batiment.id}>
+                  {batiment.nom}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Liste des salles */}
       <ListeSalles
         salles={sallesFiltrees}
         batiments={batiments}
@@ -157,6 +198,8 @@ function Salles() {
         setPageActuelle={setPageActuelle}
         elementsParPage={elementsParPage}
       />
+
+      {/* Modales */}
       {afficherModaleAjout && (
         <FormulaireSalle
           onSubmit={gererAjoutSalle}

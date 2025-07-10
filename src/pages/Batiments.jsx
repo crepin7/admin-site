@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaPlus, FaUserCircle, FaSearch } from "react-icons/fa";
+import { FaPlus, FaUserCircle, FaSearch, FaFilter, FaChartBar, FaBuilding } from "react-icons/fa";
 import ListeBatiments from "../components/ListeBatiments";
 import FormulaireBatiment from "../components/FormulaireBatiment";
 import ModaleDetailsBatiment from "../components/ModaleDetailsBatiment";
@@ -28,6 +28,12 @@ function Batiments() {
   const batimentsFiltres = batiments
     .filter((batiment) => batiment.nom.toLowerCase().includes(recherche.toLowerCase()))
     .filter((batiment) => filtreSituation === "Tous" ? true : batiment.situation === filtreSituation);
+
+  // Statistiques
+  const totalBatiments = batiments.length;
+  const totalSalles = salles.length;
+  const batimentsNord = batiments.filter(b => b.situation === "Campus nord").length;
+  const batimentsSud = batiments.filter(b => b.situation === "Campus sud").length;
 
   /**
    * Ajoute un nouveau bâtiment.
@@ -108,40 +114,99 @@ function Batiments() {
   }
 
   return (
-    <div className="relative z-0">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-indigo-500">Gestion des bâtiments</h1>
-        <FaUserCircle className="text-indigo-500 text-3xl" title="Administrateur" />
-      </div>
-      <div className="flex justify-between items-center mb-6 space-x-4">
-        <div className="relative w-1/3">
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Rechercher un bâtiment..."
-            value={recherche}
-            onChange={(e) => setRecherche(e.target.value)}
-            className="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
+    <div className="space-y-6 animate-fade-in">
+      {/* En-tête avec statistiques */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div>
+          <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-800 to-blue-600 bg-clip-text text-transparent">
+            Gestion des Bâtiments
+          </h1>
+          <p className="text-slate-600 mt-2">Administrez les bâtiments du campus</p>
         </div>
-        <div className="w-1/3">
-          <select
-            value={filtreSituation}
-            onChange={(e) => setFiltreSituation(e.target.value)}
-            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        
+        <div className="flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-2 text-slate-600">
+            <FaUserCircle className="text-2xl text-blue-500" />
+            <span className="font-medium">Administrateur</span>
+          </div>
+          <button
+            onClick={() => setAfficherModaleAjout(true)}
+            className="btn-primary"
           >
-            <option value="Tous">Tous</option>
-            <option value="Campus nord">Campus nord</option>
-            <option value="Campus sud">Campus sud</option>
-          </select>
+            <FaPlus className="mr-2" /> Nouveau Bâtiment
+          </button>
         </div>
-        <button
-          onClick={() => setAfficherModaleAjout(true)}
-          className="bg-indigo-500 text-white p-2 rounded-lg flex items-center hover:bg-indigo-600"
-        >
-          <FaPlus className="mr-2" /> Ajouter un bâtiment
-        </button>
       </div>
+
+      {/* Cartes de statistiques */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="card p-6 hover-lift">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-slate-600 text-sm font-medium">Total Bâtiments</p>
+              <p className="text-3xl font-bold text-slate-800">{totalBatiments}</p>
+            </div>
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+              <FaBuilding className="text-white text-xl" />
+            </div>
+          </div>
+        </div>
+
+        <div className="card p-6 hover-lift">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-slate-600 text-sm font-medium">Campus Nord</p>
+              <p className="text-3xl font-bold text-slate-800">{batimentsNord}</p>
+            </div>
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+              <FaBuilding className="text-white text-xl" />
+            </div>
+          </div>
+        </div>
+
+        <div className="card p-6 hover-lift">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-slate-600 text-sm font-medium">Campus Sud</p>
+              <p className="text-3xl font-bold text-slate-800">{batimentsSud}</p>
+            </div>
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+              <FaBuilding className="text-white text-xl" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Barre de recherche et filtres */}
+      <div className="card p-6">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex-1 relative">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Rechercher un bâtiment..."
+              value={recherche}
+              onChange={(e) => setRecherche(e.target.value)}
+              className="input-modern pl-10"
+            />
+          </div>
+          
+          <div className="relative">
+            <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <select
+              value={filtreSituation}
+              onChange={(e) => setFiltreSituation(e.target.value)}
+              className="input-modern pl-10 appearance-none cursor-pointer"
+            >
+              <option value="Tous">Tous les campus</option>
+              <option value="Campus nord">Campus nord</option>
+              <option value="Campus sud">Campus sud</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Liste des bâtiments */}
       <ListeBatiments
         batiments={batimentsFiltres}
         onEdit={gererEditionBatiment}
@@ -151,6 +216,8 @@ function Batiments() {
         setPageActuelle={setPageActuelle}
         elementsParPage={elementsParPage}
       />
+
+      {/* Modales */}
       {afficherModaleAjout && (
         <FormulaireBatiment onSubmit={gererAjoutBatiment} onClose={() => setAfficherModaleAjout(false)} />
       )}

@@ -1,5 +1,5 @@
 import React from "react";
-import { FaEdit, FaTrash, FaInfoCircle, FaExclamationTriangle, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaEdit, FaTrash, FaInfoCircle, FaExclamationTriangle, FaChevronLeft, FaChevronRight, FaBuilding, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
 
 /**
  * Liste des bâtiments avec options d'édition, suppression, détails et pagination.
@@ -26,56 +26,109 @@ function ListeBatiments({ batiments, onEdit, onDelete, onShowDetails, pageActuel
     }
   };
 
+  // Obtenir la couleur du badge selon le campus
+  const getCampusColor = (situation) => {
+    switch (situation) {
+      case "Campus nord":
+        return "badge-info";
+      case "Campus sud":
+        return "badge-warning";
+      default:
+        return "badge-success";
+    }
+  };
+
   return (
-    <div className="mt-6">
+    <div className="space-y-6">
       {batiments.length === 0 ? (
-        <div className="flex flex-col items-center justify-center text-gray-500 py-12">
-          <FaExclamationTriangle className="text-5xl mb-4 text-yellow-400" />
-          <p>Aucun bâtiment trouvé</p>
+        <div className="card p-12 text-center animate-fade-in">
+          <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <FaExclamationTriangle className="text-white text-3xl" />
+          </div>
+          <h3 className="text-xl font-semibold text-slate-700 mb-2">Aucun bâtiment trouvé</h3>
+          <p className="text-slate-500">Commencez par ajouter votre premier bâtiment</p>
         </div>
       ) : (
         <>
-          <div className="max-h-[calc(100vh-175px)] overflow-y-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {batimentsPaginees.map((batiment) => (
-                <div
-                  key={batiment.id}
-                  className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
-                >
+          {/* Grille des bâtiments */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {batimentsPaginees.map((batiment, index) => (
+              <div
+                key={batiment.id}
+                className="card hover-lift animate-fade-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                {/* Image du bâtiment */}
+                <div className="relative h-48 overflow-hidden rounded-t-xl">
                   {batiment.images && batiment.images.length > 0 ? (
                     <img
                       src={batiment.images[0]}
                       alt={batiment.nom}
-                      className="w-full h-32 object-cover rounded-t-lg"
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                     />
                   ) : (
-                    <div className="w-full h-32 bg-gray-200 rounded-t-lg flex items-center justify-center text-gray-500">
-                      Pas d'image
+                    <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center">
+                      <FaBuilding className="text-slate-400 text-4xl" />
                     </div>
                   )}
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-indigo-500">{batiment.nom}</h3>
-                    <p className="text-gray-600 text-sm truncate">{batiment.description}</p>
-                    <p className="text-gray-500 text-sm">Type: {batiment.type || "Non spécifié"}</p>
-                    <p className="text-gray-500 text-sm">Situation: {batiment.situation}</p>
-                    <div className="flex justify-end space-x-3 mt-3">
-                      <button
-                        onClick={() => onShowDetails(batiment)}
-                        className="text-indigo-500 hover:text-indigo-700"
-                        title="Détails"
-                      >
-                        <FaInfoCircle />
-                      </button>
+                  
+                  {/* Badge campus */}
+                  <div className="absolute top-3 right-3">
+                    <span className={`badge ${getCampusColor(batiment.situation)}`}>
+                      {batiment.situation}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Contenu de la carte */}
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-slate-800 mb-2 line-clamp-1">
+                    {batiment.nom}
+                  </h3>
+                  
+                  <p className="text-slate-600 text-sm mb-4 line-clamp-2">
+                    {batiment.description || "Aucune description disponible"}
+                  </p>
+
+                  {/* Informations du bâtiment */}
+                  <div className="space-y-2 mb-6">
+                    <div className="flex items-center text-slate-500 text-sm">
+                      <FaBuilding className="mr-2 text-slate-400" />
+                      <span>Type: {batiment.type || "Non spécifié"}</span>
+                    </div>
+                    <div className="flex items-center text-slate-500 text-sm">
+                      <FaMapMarkerAlt className="mr-2 text-slate-400" />
+                      <span>{batiment.situation}</span>
+                    </div>
+                    {batiment.dateConstruction && (
+                      <div className="flex items-center text-slate-500 text-sm">
+                        <FaCalendarAlt className="mr-2 text-slate-400" />
+                        <span>Construit en {batiment.dateConstruction}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                    <button
+                      onClick={() => onShowDetails(batiment)}
+                      className="btn-secondary text-sm px-3 py-2"
+                    >
+                      <FaInfoCircle className="mr-1" />
+                      Détails
+                    </button>
+                    
+                    <div className="flex items-center space-x-2">
                       <button
                         onClick={() => onEdit(batiment)}
-                        className="text-indigo-500 hover:text-indigo-700"
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
                         title="Modifier"
                       >
                         <FaEdit />
                       </button>
                       <button
                         onClick={() => onDelete(batiment.id)}
-                        className="text-red-500 hover:text-red-700"
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
                         title="Supprimer"
                       >
                         <FaTrash />
@@ -83,48 +136,57 @@ function ListeBatiments({ batiments, onEdit, onDelete, onShowDetails, pageActuel
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
+
+          {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex justify-center items-center mt-6 space-x-2">
+            <div className="flex justify-center items-center space-x-2 mt-8">
               <button
                 onClick={() => changerPage(pageActuelle - 1)}
                 disabled={pageActuelle === 1}
-                className={`p-2 rounded-lg ${
+                className={`p-3 rounded-xl transition-all duration-200 ${
                   pageActuelle === 1
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-indigo-500 text-white hover:bg-indigo-600"
+                    ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                    : "bg-white text-slate-600 hover:bg-slate-50 hover-lift"
                 }`}
               >
                 <FaChevronLeft />
               </button>
+              
               {[...Array(totalPages).keys()].map((index) => (
                 <button
                   key={index + 1}
                   onClick={() => changerPage(index + 1)}
-                  className={`px-4 py-2 rounded-lg ${
+                  className={`px-4 py-3 rounded-xl transition-all duration-200 ${
                     pageActuelle === index + 1
-                      ? "bg-indigo-500 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
+                      : "bg-white text-slate-600 hover:bg-slate-50 hover-lift"
                   }`}
                 >
                   {index + 1}
                 </button>
               ))}
+              
               <button
                 onClick={() => changerPage(pageActuelle + 1)}
                 disabled={pageActuelle === totalPages}
-                className={`p-2 rounded-lg ${
+                className={`p-3 rounded-xl transition-all duration-200 ${
                   pageActuelle === totalPages
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-indigo-500 text-white hover:bg-indigo-600"
+                    ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                    : "bg-white text-slate-600 hover:bg-slate-50 hover-lift"
                 }`}
               >
                 <FaChevronRight />
               </button>
             </div>
           )}
+
+          {/* Informations de pagination */}
+          <div className="text-center text-slate-500 text-sm">
+            Affichage de {indexDebut + 1} à {Math.min(indexFin, batiments.length)} sur {batiments.length} bâtiments
+          </div>
         </>
       )}
     </div>

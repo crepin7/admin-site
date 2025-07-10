@@ -8,10 +8,16 @@ import BarreLaterale from "../components/BarreLaterale";
  */
 function TableauDeBord() {
   return (
-    <div className="flex">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <BarreLaterale />
-      <div className="ml-64 flex-1 p-6 bg-gray-100 min-h-screen">
-        <Outlet />
+      
+      {/* Contenu principal */}
+      <div className="flex-1 lg:ml-72 transition-all duration-300">
+        <div className="p-6 lg:p-8">
+          <div className="animate-fade-in">
+            <Outlet />
+          </div>
+        </div>
       </div>
     </div>
   );

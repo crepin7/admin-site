@@ -1,5 +1,5 @@
 import React from "react";
-import { FaEdit, FaTrash, FaExclamationTriangle, FaInfoCircle, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaEdit, FaTrash, FaExclamationTriangle, FaInfoCircle, FaChevronLeft, FaChevronRight, FaDoorOpen, FaBuilding, FaUsers } from "react-icons/fa";
 
 /**
  * Liste des salles avec options de détails, d'édition, de suppression et pagination.
@@ -14,135 +14,91 @@ import { FaEdit, FaTrash, FaExclamationTriangle, FaInfoCircle, FaChevronLeft, Fa
  * @param {number} props.elementsParPage - Nombre d'éléments par page.
  */
 function ListeSalles({ salles, batiments, onEdit, onDelete, onDetails, pageActuelle, setPageActuelle, elementsParPage }) {
-  // Calculer les salles à afficher pour la page actuelle
   const indexDebut = (pageActuelle - 1) * elementsParPage;
   const indexFin = indexDebut + elementsParPage;
   const sallesPaginees = salles.slice(indexDebut, indexFin);
   const totalPages = Math.ceil(salles.length / elementsParPage);
 
-  // Changer de page
   const changerPage = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setPageActuelle(page);
-    }
+    if (page >= 1 && page <= totalPages) setPageActuelle(page);
   };
 
   return (
-    <div className="mt-6">
+    <div className="space-y-6">
       {salles.length === 0 ? (
-        <div className="flex flex-col items-center justify-center text-gray-500 py-12">
-          <FaExclamationTriangle className="text-5xl mb-4 text-yellow-400" />
-          <p className="text-lg font-medium">Aucune salle trouvée</p>
+        <div className="card p-12 text-center animate-fade-in">
+          <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <FaExclamationTriangle className="text-white text-3xl" />
+          </div>
+          <h3 className="text-xl font-semibold text-slate-700 mb-2">Aucune salle trouvée</h3>
+          <p className="text-slate-500">Ajoutez votre première salle</p>
         </div>
       ) : (
         <>
-          <div className="max-h-[calc(100vh-175px)] overflow-y-auto space-y-6 p-2">
-            {sallesPaginees.map((salle) => {
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sallesPaginees.map((salle, index) => {
               const batiment = batiments.find((b) => b.id === salle.buildingId);
               return (
-                <div
-                  key={salle.id}
-                  className="bg-white shadow-sm rounded-xl p-5 flex items-center space-x-6 hover:shadow-md transition-shadow duration-200 border border-gray-100"
-                >
-                  {salle.images && salle.images.length > 0 ? (
-                    <img
-                      src={salle.images[0]}
-                      alt={salle.nom}
-                      className="w-28 h-28 object-cover rounded-lg"
-                    />
-                  ) : (
-                    <div className="w-28 h-28 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-sm">
-                      Pas d'image
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-indigo-600">{salle.nom}</h3>
-                    <p className="text-sm text-gray-700 mt-1">
-                      <span className="font-medium">Bâtiment:</span>{" "}
-                      {batiment ? batiment.nom : "Inconnu"}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-medium">Capacité:</span> {salle.capacite}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-medium">Description:</span>{" "}
-                      {salle.description || "Aucune"}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-medium">Latitude:</span>{" "}
-                      {salle.latitude || "Non spécifiée"}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-medium">Longitude:</span>{" "}
-                      {salle.longitude || "Non spécifiée"}
-                    </p>
+                <div key={salle.id} className="card hover-lift animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <div className="relative h-32 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 rounded-t-xl">
+                    {salle.images && salle.images.length > 0 ? (
+                      <img src={salle.images[0]} alt={salle.nom} className="w-full h-full object-cover rounded-t-xl" />
+                    ) : (
+                      <FaDoorOpen className="text-4xl text-slate-300" />
+                    )}
                   </div>
-                  <div className="flex space-x-4">
-                    <button
-                      onClick={() => onDetails(salle)}
-                      className="text-indigo-500 hover:text-indigo-700 p-2 rounded-full hover:bg-indigo-100 transition-colors duration-200"
-                      title="Détails"
-                    >
-                      <FaInfoCircle className="text-lg" />
-                    </button>
-                    <button
-                      onClick={() => onEdit(salle)}
-                      className="text-indigo-500 hover:text-indigo-700 p-2 rounded-full hover:bg-indigo-100 transition-colors duration-200"
-                      title="Modifier"
-                    >
-                      <FaEdit className="text-lg" />
-                    </button>
-                    <button
-                      onClick={() => onDelete(salle.id)}
-                      className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 transition-colors duration-200"
-                      title="Supprimer"
-                    >
-                      <FaTrash className="text-lg" />
-                    </button>
+                  <div className="p-6">
+                    <h3 className="text-lg font-bold text-slate-800 mb-1 line-clamp-1 flex items-center gap-2">
+                      <FaDoorOpen className="text-blue-400" /> {salle.nom}
+                    </h3>
+                    <div className="flex items-center text-slate-500 text-xs mb-2">
+                      <FaBuilding className="mr-1" />
+                      {batiment ? batiment.nom : "Bâtiment inconnu"}
+                    </div>
+                    <div className="flex items-center text-slate-500 text-xs mb-2">
+                      <FaUsers className="mr-1" /> Capacité : {salle.capacite}
+                    </div>
+                    <p className="text-slate-600 text-sm mb-2 line-clamp-2">{salle.description || "Aucune description"}</p>
+                    <div className="flex items-center gap-2 text-xs text-slate-400 mb-4">
+                      <span>Lat: {salle.latitude || "-"}</span>
+                      <span>Lng: {salle.longitude || "-"}</span>
+                    </div>
+                    <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                      <button onClick={() => onDetails(salle)} className="btn-secondary text-xs px-3 py-2">
+                        <FaInfoCircle className="mr-1" /> Détails
+                      </button>
+                      <div className="flex items-center space-x-2">
+                        <button onClick={() => onEdit(salle)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200" title="Modifier">
+                          <FaEdit />
+                        </button>
+                        <button onClick={() => onDelete(salle.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200" title="Supprimer">
+                          <FaTrash />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               );
             })}
           </div>
           {totalPages > 1 && (
-            <div className="flex justify-center items-center mt-6 space-x-2">
-              <button
-                onClick={() => changerPage(pageActuelle - 1)}
-                disabled={pageActuelle === 1}
-                className={`p-2 rounded-lg ${
-                  pageActuelle === 1
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-indigo-500 text-white hover:bg-indigo-600"
-                }`}
-              >
+            <div className="flex justify-center items-center space-x-2 mt-8">
+              <button onClick={() => changerPage(pageActuelle - 1)} disabled={pageActuelle === 1} className={`p-3 rounded-xl transition-all duration-200 ${pageActuelle === 1 ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-white text-slate-600 hover:bg-slate-50 hover-lift"}`}>
                 <FaChevronLeft />
               </button>
               {[...Array(totalPages).keys()].map((index) => (
-                <button
-                  key={index + 1}
-                  onClick={() => changerPage(index + 1)}
-                  className={`px-4 py-2 rounded-lg ${
-                    pageActuelle === index + 1
-                      ? "bg-indigo-500 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  }`}
-                >
+                <button key={index + 1} onClick={() => changerPage(index + 1)} className={`px-4 py-3 rounded-xl transition-all duration-200 ${pageActuelle === index + 1 ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg" : "bg-white text-slate-600 hover:bg-slate-50 hover-lift"}`}>
                   {index + 1}
                 </button>
               ))}
-              <button
-                onClick={() => changerPage(pageActuelle + 1)}
-                disabled={pageActuelle === totalPages}
-                className={`p-2 rounded-lg ${
-                  pageActuelle === totalPages
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-indigo-500 text-white hover:bg-indigo-600"
-                }`}
-              >
+              <button onClick={() => changerPage(pageActuelle + 1)} disabled={pageActuelle === totalPages} className={`p-3 rounded-xl transition-all duration-200 ${pageActuelle === totalPages ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-white text-slate-600 hover:bg-slate-50 hover-lift"}`}>
                 <FaChevronRight />
               </button>
             </div>
           )}
+          <div className="text-center text-slate-500 text-sm">
+            Affichage de {indexDebut + 1} à {Math.min(indexFin, salles.length)} sur {salles.length} salles
+          </div>
         </>
       )}
     </div>
