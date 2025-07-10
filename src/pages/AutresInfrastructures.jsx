@@ -186,7 +186,10 @@ function AutresInfrastructures() {
               type="text"
               placeholder="Rechercher une infrastructure..."
               value={recherche}
-              onChange={(e) => setRecherche(e.target.value)}
+              onChange={(e) => {
+                setRecherche(e.target.value);
+                setPageActuelle(1);
+              }}
               className="input-modern pl-10"
             />
           </div>
@@ -195,7 +198,10 @@ function AutresInfrastructures() {
             <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none" />
             <select
               value={filtreSituation}
-              onChange={(e) => setFiltreSituation(e.target.value)}
+              onChange={(e) => {
+                setFiltreSituation(e.target.value);
+                setPageActuelle(1);
+              }}
               className="input-modern pl-10 appearance-none cursor-pointer"
             >
               <option value="Tous">Tous les campus</option>

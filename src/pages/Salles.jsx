@@ -164,7 +164,10 @@ function Salles() {
               type="text"
               placeholder="Rechercher une salle..."
               value={recherche}
-              onChange={(e) => setRecherche(e.target.value)}
+              onChange={(e) => {
+                setRecherche(e.target.value);
+                setPageActuelle(1);
+              }}
               className="input-modern pl-10"
             />
           </div>
@@ -173,7 +176,10 @@ function Salles() {
             <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none" />
             <select
               value={batimentFiltre}
-              onChange={(e) => setBatimentFiltre(e.target.value)}
+              onChange={(e) => {
+                setBatimentFiltre(e.target.value);
+                setPageActuelle(1);
+              }}
               className="input-modern pl-10 appearance-none cursor-pointer"
             >
               <option value="tous">Tous les bâtiments</option>
