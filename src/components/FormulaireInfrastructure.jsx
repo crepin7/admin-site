@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaServer, FaTimes, FaUpload } from "react-icons/fa";
 import { uploadImageToAppwrite } from '../services/AppwriteService';
+import { toast } from "react-toastify";
 
 /**
  * Formulaire pour ajouter ou modifier une infrastructure.
@@ -19,6 +20,7 @@ function FormulaireInfrastructure({ onSubmit, initialData = {}, onClose }) {
     type: initialData.type || "",
     situation: initialData.situation || "Campus nord",
   });
+  const [uploadEnCours, setUploadEnCours] = useState(false);
 
   /**
    * Gère les changements dans les champs du formulaire.
@@ -36,19 +38,61 @@ function FormulaireInfrastructure({ onSubmit, initialData = {}, onClose }) {
   const gererUploadImage = async (e) => {
     const fichiers = Array.from(e.target.files);
     if (fichiers.length > 0) {
+      setUploadEnCours(true);
       const urls = [];
+      let succesCount = 0;
+      
       for (const fichier of fichiers) {
         try {
+          // Validation du fichier
+          if (fichier.size > 5 * 1024 * 1024) { // 5MB max
+            toast.error(`Le fichier ${fichier.name} est trop volumineux. Taille maximum : 5MB`);
+            continue;
+          }
+          
+          if (!fichier.type.startsWith('image/')) {
+            toast.error(`Le fichier ${fichier.name} n'est pas une image valide.`);
+            continue;
+          }
+          
           const url = await uploadImageToAppwrite(fichier);
           urls.push(url);
+          succesCount++;
         } catch (error) {
-          alert("Erreur lors de l'upload de l'image : " + fichier.name);
+          console.error('Erreur détaillée:', error);
+          let messageErreur = `Erreur lors de l'upload de l'image ${fichier.name}: `;
+          
+          if (error.code === 401) {
+            messageErreur += "Erreur d'authentification. Vérifiez vos permissions.";
+          } else if (error.code === 413) {
+            messageErreur += "Fichier trop volumineux.";
+          } else if (error.code === 415) {
+            messageErreur += "Type de fichier non supporté.";
+          } else if (error.message) {
+            messageErreur += error.message;
+          } else {
+            messageErreur += "Erreur inconnue lors de l'upload.";
+          }
+          
+          toast.error(messageErreur);
         }
       }
+      
       setDonneesFormulaire((prev) => ({
         ...prev,
         images: [...prev.images, ...urls],
       }));
+      
+      setUploadEnCours(false);
+      
+      // Notification de succès
+      if (succesCount > 0) {
+        if (succesCount === 1) {
+          toast.success(`${succesCount} image importée avec succès !`);
+        } else {
+          toast.success(`${succesCount} images importées avec succès !`);
+        }
+      }
     }
   };
 
@@ -120,9 +164,25 @@ function FormulaireInfrastructure({ onSubmit, initialData = {}, onClose }) {
           <div>
             <label className="block text-sm font-medium text-white mb-1">Images</label>
             <div className="flex gap-2 mb-2">
-              <label className="btn-secondary cursor-pointer">
-                <FaUpload className="mr-2" /> Importer
-                <input type="file" accept="image/*" multiple onChange={gererUploadImage} className="hidden" />
+              <label className={`btn-secondary cursor-pointer ${uploadEnCours ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                {uploadEnCours ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Upload...
+                  </>
+                ) : (
+                  <>
+                    <FaUpload className="mr-2" /> Importer
+                  </>
+                )}
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  multiple 
+                  onChange={gererUploadImage} 
+                  className="hidden" 
+                  disabled={uploadEnCours}
+                />
               </label>
               <input type="url" name="imageUrl" onChange={(e) => setDonneesFormulaire((prev) => ({ ...prev, images: [...prev.images, e.target.value].filter(Boolean), }))} className="input-modern" placeholder="Coller l'URL d'une image" />
             </div>
