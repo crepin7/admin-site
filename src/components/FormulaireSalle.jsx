@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaDoorOpen, FaTimes, FaImage, FaUpload, FaBuilding } from "react-icons/fa";
+import { uploadImageToAppwrite } from '../services/AppwriteService';
 
 /**
  * Formulaire pour ajouter ou modifier une salle.
@@ -33,23 +34,22 @@ function FormulaireSalle({ onSubmit, initialData = {}, batiments, onClose }) {
    * Gère l'upload de plusieurs images.
    * @param {Event} e - Événement de changement de fichier.
    */
-  const gererUploadImage = (e) => {
+  const gererUploadImage = async (e) => {
     const fichiers = Array.from(e.target.files);
     if (fichiers.length > 0) {
-      const nouvellesImages = [];
-      fichiers.forEach((fichier) => {
-        const lecteur = new FileReader();
-        lecteur.onloadend = () => {
-          nouvellesImages.push(lecteur.result);
-          if (nouvellesImages.length === fichiers.length) {
-            setDonneesFormulaire((prev) => ({
-              ...prev,
-              images: [...prev.images, ...nouvellesImages],
-            }));
-          }
-        };
-        lecteur.readAsDataURL(fichier);
-      });
+      const urls = [];
+      for (const fichier of fichiers) {
+        try {
+          const url = await uploadImageToAppwrite(fichier);
+          urls.push(url);
+        } catch (error) {
+          alert("Erreur lors de l'upload de l'image : " + fichier.name);
+        }
+      }
+      setDonneesFormulaire((prev) => ({
+        ...prev,
+        images: [...prev.images, ...urls],
+      }));
     }
   };
 
