@@ -1,5 +1,5 @@
 ![Release](https://img.shields.io/github/v/release/crepin7/admin-site?include_prereleases&sort=semver)
-![License](https://img.shields.io/github/license/crepin7/admin-site)
+![License](https://img.shields.io/github/license/crepin7/admin-site?v=1)
 
 # 🛠️  Admin Site - Application Web d’Administration de ULMap
 
@@ -82,12 +82,12 @@ L'application supporte l'import d'images avec les fonctionnalités suivantes :
 ## 🖼️ Aperçu de l’application
 
 <p align="center">
-  <img src="screenshots/login.png" width="300" />
-  <img src="screenshots/Loading.png" width="300" />
+  <img src="screenshots/login.png" width="500" />
+  <img src="screenshots/Loading.png" width="500" />
 </p>
 <p align="center">
-  <img src="screenshots/dashboard.png" width="300" />
-  <img src="screenshots/adding&editing.png" width="300" />
+  <img src="screenshots/dashboard.png" width="500" />
+  <img src="screenshots/adding&editing.png" width="500" />
 </p>
 
 
