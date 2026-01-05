@@ -8,6 +8,7 @@ import {
   doc,
   query,
   where,
+  orderBy
 } from "firebase/firestore";
 
 // Noms des collections dans Firestore
@@ -33,7 +34,8 @@ export const ajouterBatiment = async (donneesBatiment) => {
  * @returns {Array} - Liste des bâtiments avec leurs données.
  */
 export const recupererBatiments = async () => {
-  const instantane = await getDocs(collection(db, COLLECTION_BATIMENTS));
+  const q = query(collection(db, COLLECTION_BATIMENTS), orderBy("nom"));
+  const instantane = await getDocs(q);
   return instantane.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };
 
@@ -81,8 +83,37 @@ export const ajouterSalle = async (donneesSalle) => {
  * @returns {Array} - Liste des salles avec leurs données.
  */
 export const recupererSalles = async () => {
-  const instantane = await getDocs(collection(db, COLLECTION_SALLES));
-  return instantane.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  // 1. Charger les bâtiments pour avoir leur nom
+  const batimentsSnap = await getDocs(collection(db, COLLECTION_BATIMENTS));
+  const batimentMap = {};
+  batimentsSnap.docs.forEach((doc) => {
+    batimentMap[doc.id] = doc.data().nom || "";
+  });
+
+  // 2. Charger les salles
+  const sallesSnap = await getDocs(collection(db, COLLECTION_SALLES));
+  const salles = sallesSnap.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      situation: batimentMap[data.buildingId] || "Bâtiment inconnu",
+    };
+  });
+
+  // 3. Tri EXACT comme l'app mobile
+  const sallesTriees = salles.sort((a, b) => {
+    const s1 = a.situation.toLowerCase();
+    const s2 = b.situation.toLowerCase();
+    if (s1 < s2) return -1;
+    if (s1 > s2) return 1;
+
+    const n1 = a.nom.toLowerCase();
+    const n2 = b.nom.toLowerCase();
+    return n1.localeCompare(n2);
+  });
+
+  return sallesTriees;
 };
 
 /**
@@ -123,7 +154,8 @@ export const ajouterInfrastructure = async (donneesInfra) => {
  * @returns {Array} - Liste des infrastructures avec leurs données.
  */
 export const recupererInfrastructures = async () => {
-  const instantane = await getDocs(collection(db, COLLECTION_INFRASTRUCTURES));
+  const q = query(collection(db, COLLECTION_INFRASTRUCTURES), orderBy("nom"));
+  const instantane = await getDocs(q);
   return instantane.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };
 

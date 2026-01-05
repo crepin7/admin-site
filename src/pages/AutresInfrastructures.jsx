@@ -204,7 +204,7 @@ function AutresInfrastructures() {
               }}
               className="input-modern pl-10 appearance-none cursor-pointer"
             >
-              <option value="Tous">Tous les campus</option>
+              <option value="Tous">Tout le campus</option>
               <option value="Campus nord">Campus nord</option>
               <option value="Campus sud">Campus sud</option>
             </select>
