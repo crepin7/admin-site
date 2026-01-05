@@ -83,14 +83,10 @@ L'application supporte l'import d'images avec les fonctionnalités suivantes :
 
 <p align="center">
   <img src="screenshots/login.png" width="300" />
-</p>
-<p align="center">
   <img src="screenshots/Loading.png" width="300" />
 </p>
 <p align="center">
   <img src="screenshots/dashboard.png" width="300" />
-</p>
-<p align="center">
   <img src="screenshots/adding&editing.png" width="300" />
 </p>
 
@@ -108,7 +104,7 @@ L'application supporte l'import d'images avec les fonctionnalités suivantes :
 ### Installation 
 
 1. Cloner le dépôt à l'adresse : [Repository link](https://github.com/crepin7/admin-site.git)
-Ou taper la commande :
+ou taper la commande :
 
 ```bash
 git clone https://github.com/crepin7/admin-site.git
